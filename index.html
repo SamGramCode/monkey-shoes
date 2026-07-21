@@ -1,0 +1,2961 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MONKEY SHOES — La mejor experiencia de la moda</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --negro: #080808;
+  --amarillo: #FFD600;
+  --rojo: #E63000;
+  --blanco: #F5F5F5;
+  --gris: #1a1a1a;
+  --gris2: #2a2a2a;
+  --verde: #00E676;
+  --font: 'Arial Black', 'Impact', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;overflow-x:hidden;background:#fff;color:#111;font-family:Arial,sans-serif}
+img{max-width:100%}
+
+/* ===== SPLASH ===== */
+#splash {
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:#000;overflow:hidden;
+}
+#splashVideo {
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0.35;
+}
+.splash-overlay {
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:20px;
+}
+.splash-logo {
+  font-family:var(--font);font-size:clamp(2.5rem,8vw,5rem);
+  color:var(--amarillo);letter-spacing:4px;
+  text-shadow:0 0 30px rgba(255,214,0,.6),0 0 60px rgba(255,214,0,.3);
+  animation:logoIn 1s ease forwards;
+}
+.splash-logo span{color:var(--rojo)}
+.splash-sub {
+  font-size:clamp(.9rem,2.5vw,1.2rem);
+  color:rgba(255,255,255,.7);letter-spacing:3px;text-transform:uppercase;
+  margin:8px 0 30px;animation:fadeUp .8s .3s ease both;
+}
+.shoe-wrap {
+  position:relative;width:200px;height:180px;
+  margin:0 auto 30px;
+  animation:shoeIn 1.2s .1s cubic-bezier(.22,1,.36,1) both;
+}
+.shoe-emoji {
+  font-size:130px;line-height:1;
+  display:inline-block;
+  filter:drop-shadow(0 0 20px rgba(255,214,0,.7)) drop-shadow(0 0 40px rgba(255,64,0,.4));
+  animation:float 3s 1.5s ease-in-out infinite;
+  transform:rotate(-15deg);
+}
+.shoe-shadow {
+  position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
+  width:120px;height:12px;
+  background:radial-gradient(ellipse,rgba(255,214,0,.4) 0%,transparent 70%);
+  animation:shadowPulse 3s 1.5s ease-in-out infinite;
+}
+.splash-btn {
+  background:var(--amarillo);color:#000;
+  border:none;border-radius:50px;
+  font-family:var(--font);font-size:1.1rem;font-weight:900;
+  letter-spacing:3px;padding:16px 48px;cursor:pointer;
+  text-transform:uppercase;
+  box-shadow:0 0 30px rgba(255,214,0,.5);
+  animation:fadeUp .8s .6s ease both;
+  transition:transform .2s,box-shadow .2s;
+}
+.splash-btn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(255,214,0,.8)}
+.splash-btn:active{transform:scale(.98)}
+.splash-shoe-btn {
+  width:min(200px,50vw);cursor:pointer;
+  animation:float 3s ease-in-out infinite, shoeIn 1.2s .1s cubic-bezier(.22,1,.36,1) both;
+  filter:drop-shadow(0 0 20px rgba(255,255,255,.3)) drop-shadow(0 20px 30px rgba(0,0,0,.8));
+  transition:transform .2s,filter .2s;
+}
+.splash-shoe-btn:hover{
+  filter:drop-shadow(0 0 30px rgba(255,214,0,.6)) drop-shadow(0 20px 30px rgba(0,0,0,.8));
+  transform:scale(1.06) translateY(-4px);
+}
+.splash-shoe-btn:active{transform:scale(.97)}
+.graffiti-tag {
+  position:absolute;font-family:var(--font);
+  opacity:.06;font-size:8rem;pointer-events:none;
+  user-select:none;color:var(--amarillo);white-space:nowrap;
+}
+.g1{top:-20px;left:-40px;transform:rotate(-15deg)}
+.g2{bottom:-20px;right:-40px;transform:rotate(10deg);color:var(--rojo)}
+.lines-bg {
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    -45deg,transparent,transparent 40px,
+    rgba(255,214,0,.015) 40px,rgba(255,214,0,.015) 41px
+  );pointer-events:none;
+}
+
+@keyframes logoIn {
+  from{opacity:0;transform:scale(1.3) translateY(-20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes shoeIn {
+  0%{opacity:0;transform:translateY(80px) scale(.3)}
+  60%{transform:translateY(-15px) scale(1.05)}
+  80%{transform:translateY(5px) scale(.97)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes float {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-18px)}
+}
+@keyframes shadowPulse {
+  0%,100%{transform:translateX(-50%) scaleX(1);opacity:.5}
+  50%{transform:translateX(-50%) scaleX(.7);opacity:.2}
+}
+.splash-out {
+  animation:splashExit .6s ease forwards!important;
+}
+@keyframes splashExit {
+  to{opacity:0;transform:scale(1.05);pointer-events:none}
+}
+
+/* ===== APP PRINCIPAL ===== */
+#app{display:none;min-height:100vh}
+
+/* HEADER */
+.header {
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:#fff;
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.hamburger-btn {
+  background:none;border:none;cursor:pointer;
+  display:flex;flex-direction:column;gap:5px;padding:4px;
+}
+.hamburger-btn span {
+  display:block;width:26px;height:3px;
+  background:#111;border-radius:3px;transition:all .3s;
+}
+.header-icons{display:flex;align-items:center;gap:4px}
+.icon-btn{background:none;border:none;font-size:1.1rem;cursor:pointer;padding:4px}
+.icon-sep{color:#ccc;font-size:.9rem}
+.header-logo {
+  font-family:var(--font);font-size:1.4rem;
+  color:var(--amarillo);letter-spacing:2px;
+}
+.header-logo span{color:var(--rojo)}
+.cart-btn {
+  background:var(--amarillo);border:none;border-radius:50px;
+  padding:8px 18px;font-family:var(--font);font-size:.85rem;
+  font-weight:900;color:#000;cursor:pointer;letter-spacing:1px;
+  display:flex;align-items:center;gap:6px;
+  transition:transform .2s;
+}
+.cart-btn:hover{transform:scale(1.05)}
+.cart-count {
+  background:#000;color:var(--amarillo);
+  border-radius:50%;width:20px;height:20px;
+  font-size:.75rem;display:flex;align-items:center;justify-content:center;
+}
+
+/* HERO STRIP */
+.hero-strip {
+  background:#fff;
+  padding:40px 20px;text-align:center;
+  border-bottom:1px solid rgba(0,0,0,.08);
+  position:relative;overflow:hidden;
+}
+.hero-strip::before {content:none}
+.hero-title {
+  font-family:var(--font);font-size:clamp(1.6rem,5vw,3rem);
+  color:#111;position:relative;
+}
+.hero-title span{color:var(--amarillo)}
+.hero-sub{color:rgba(0,0,0,.45);font-size:.9rem;margin-top:6px;letter-spacing:2px;text-transform:uppercase}
+
+/* FILTROS */
+.filtros {
+  padding:16px 20px;background:#fff;
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  border-bottom:1px solid rgba(0,0,0,.08);
+  position:sticky;top:62px;z-index:90;
+}
+.filtro-label{font-size:.75rem;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:1px}
+.filtro-select {
+  background:#f5f5f5;color:#111;border:1px solid rgba(0,0,0,.12);
+  border-radius:8px;padding:6px 12px;font-size:.85rem;outline:none;cursor:pointer;
+}
+.filtro-select:focus{border-color:var(--amarillo)}
+.filtro-search {
+  flex:1;min-width:140px;
+  background:#f5f5f5;color:#111;border:1px solid rgba(0,0,0,.12);
+  border-radius:8px;padding:6px 12px;font-size:.85rem;outline:none;
+}
+.filtro-search::placeholder{color:rgba(0,0,0,.3)}
+.filtro-search:focus{border-color:var(--amarillo)}
+.filtro-clear {
+  background:transparent;border:1px solid rgba(0,0,0,.15);
+  color:rgba(0,0,0,.4);border-radius:8px;padding:6px 12px;
+  font-size:.8rem;cursor:pointer;white-space:nowrap;
+}
+.filtro-clear:hover{border-color:var(--rojo);color:var(--rojo)}
+
+/* GRID PRODUCTOS */
+.productos-wrap{padding:20px;max-width:1200px;margin:0 auto}
+.productos-count{font-size:.8rem;color:rgba(0,0,0,.35);margin-bottom:16px;letter-spacing:1px;text-transform:uppercase}
+.grid-productos {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:16px;
+}
+@media(min-width:600px){.grid-productos{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}}
+
+.card {
+  background:#f9f9f9;border-radius:16px;overflow:hidden;
+  cursor:pointer;transition:transform .2s,box-shadow .2s;
+  border:1px solid rgba(0,0,0,.08);
+  position:relative;
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.15)}
+.card-img {
+  width:100%;aspect-ratio:1;object-fit:cover;background:#111;
+  display:block;
+}
+.card-no-img {
+  width:100%;aspect-ratio:1;
+  background:linear-gradient(135deg,#111,#1a1a1a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:4rem;
+}
+.card-body{padding:12px}
+.card-marca {
+  font-size:.7rem;text-transform:uppercase;letter-spacing:2px;
+  color:var(--amarillo);font-weight:700;
+}
+.card-nombre {
+  font-size:.95rem;font-weight:700;color:#111;
+  margin:4px 0;line-height:1.2;
+}
+.card-precio {
+  font-family:var(--font);font-size:1.1rem;color:var(--amarillo);
+}
+.card-precio small{font-size:.7rem;color:rgba(255,255,255,.4);font-family:Arial,sans-serif;font-weight:normal}
+.card-colores {
+  display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;
+}
+.color-dot {
+  width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);
+}
+.card-badge {
+  position:absolute;top:10px;right:10px;
+  background:var(--rojo);color:#fff;
+  font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:1px;
+}
+
+/* EMPTY STATE */
+.empty {
+  grid-column:1/-1;text-align:center;padding:60px 20px;
+  color:rgba(0,0,0,.25);
+}
+.empty-icon{font-size:4rem;margin-bottom:16px}
+.empty p{font-size:1rem}
+
+/* LOADING */
+.loading {
+  grid-column:1/-1;text-align:center;padding:60px 20px;
+}
+.spinner {
+  width:40px;height:40px;border:3px solid rgba(255,214,0,.2);
+  border-top-color:var(--amarillo);border-radius:50%;
+  animation:spin 1s linear infinite;margin:0 auto 16px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== MODAL PRODUCTO ===== */
+.overlay {
+  position:fixed;top:68px;left:0;right:0;bottom:0;z-index:99;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.overlay.active{display:flex}
+@media(min-width:600px){.overlay{align-items:center}}
+.modal {
+  background:var(--gris);border-radius:20px 20px 0 0;
+  width:100%;max-width:560px;
+  max-height:92vh;overflow-y:auto;
+  animation:slideUp .35s ease;
+}
+@media(min-width:600px){.modal{border-radius:20px;max-height:88vh}}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.modal-close {
+  position:sticky;top:0;z-index:10;
+  display:flex;justify-content:flex-end;padding:14px 16px 0;
+  background:var(--gris);
+}
+.btn-close {
+  background:rgba(255,255,255,.08);border:none;border-radius:50%;
+  width:36px;height:36px;font-size:1.2rem;color:var(--blanco);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.modal-imgs {
+  width:100%;overflow-x:auto;display:flex;gap:8px;
+  padding:0 16px 12px;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+}
+.modal-img {
+  min-width:80%;height:240px;object-fit:cover;border-radius:12px;
+  scroll-snap-align:start;background:#111;flex-shrink:0;
+}
+.modal-img-placeholder {
+  min-width:80%;height:240px;border-radius:12px;
+  background:linear-gradient(135deg,#111,#1a1a1a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:6rem;flex-shrink:0;
+}
+.modal-body{padding:0 16px 16px}
+.modal-marca {
+  font-size:.75rem;text-transform:uppercase;letter-spacing:2px;
+  color:var(--amarillo);font-weight:700;
+}
+.modal-nombre{font-family:var(--font);font-size:1.4rem;color:var(--blanco);margin:4px 0}
+.modal-precio{font-family:var(--font);font-size:1.6rem;color:var(--amarillo);margin-bottom:6px}
+.modal-precio small{font-size:.8rem;color:rgba(255,255,255,.4);font-family:Arial,sans-serif;font-weight:normal}
+.modal-desc{font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:16px}
+
+.section-label {
+  font-size:.75rem;text-transform:uppercase;letter-spacing:2px;
+  color:rgba(255,255,255,.35);font-weight:700;margin-bottom:10px;
+}
+.tallas-grid {
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;
+}
+.talla-btn {
+  background:var(--gris2);border:1.5px solid rgba(255,255,255,.1);
+  color:var(--blanco);border-radius:8px;padding:8px 14px;
+  font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s;
+  min-width:44px;text-align:center;
+}
+.talla-btn.selected{background:var(--amarillo);color:#000;border-color:var(--amarillo)}
+.talla-btn.sin-stock{opacity:.25;cursor:not-allowed;text-decoration:line-through}
+.colores-grid {
+  display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;
+}
+.color-btn {
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;
+}
+.color-circle {
+  width:32px;height:32px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.15);transition:all .15s;
+}
+.color-btn.selected .color-circle{border-color:var(--amarillo);box-shadow:0 0 0 3px rgba(255,214,0,.3)}
+.color-name{font-size:.65rem;color:rgba(255,255,255,.5);text-transform:capitalize}
+
+.modal-actions{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.btn-pedir {
+  background:var(--amarillo);color:#000;border:none;border-radius:50px;
+  padding:16px;font-family:var(--font);font-size:1rem;font-weight:900;
+  letter-spacing:2px;cursor:pointer;text-transform:uppercase;
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-pedir:hover{transform:scale(1.02);box-shadow:0 0 30px rgba(255,214,0,.4)}
+.btn-pedir:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ===== MODAL PEDIDO ===== */
+.pedido-section{margin-bottom:20px}
+.pedido-resumen {
+  background:rgba(255,255,255,.04);border-radius:12px;
+  padding:14px;margin-bottom:16px;
+}
+.pedido-resumen-item{display:flex;justify-content:space-between;margin-bottom:6px;font-size:.9rem}
+.pedido-resumen-item:last-child{margin-bottom:0;border-top:1px solid rgba(255,255,255,.08);padding-top:8px;font-weight:700}
+.form-group{margin-bottom:14px}
+.form-label {
+  display:block;font-size:.75rem;text-transform:uppercase;
+  letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:6px;
+}
+.form-input, .form-select, .form-textarea {
+  width:100%;background:var(--gris2);border:1.5px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:12px;color:var(--blanco);font-size:.95rem;
+  outline:none;transition:border-color .2s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--amarillo)}
+.form-textarea{resize:vertical;min-height:70px;font-family:Arial,sans-serif}
+.form-select option{background:var(--gris2)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cant-row {
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.cant-btn {
+  background:var(--gris2);border:1.5px solid rgba(255,255,255,.1);
+  color:var(--blanco);border-radius:8px;width:36px;height:36px;
+  font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.cant-num{font-size:1.1rem;font-weight:700;min-width:24px;text-align:center}
+.cant-label{font-size:.85rem;color:rgba(255,255,255,.4)}
+
+/* ===== TOAST ===== */
+.toast {
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--gris);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:14px 20px;
+  font-size:.9rem;color:var(--blanco);
+  z-index:9999;white-space:nowrap;
+  animation:toastIn .3s ease;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
+  display:none;
+}
+.toast.show{display:block}
+.toast.ok{border-color:var(--verde);color:var(--verde)}
+.toast.err{border-color:var(--rojo);color:var(--rojo)}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* FOOTER */
+.footer {
+  text-align:center;padding:30px 20px;
+  border-top:1px solid rgba(0,0,0,.08);
+  color:rgba(0,0,0,.3);font-size:.8rem;margin-top:10px;
+}
+.footer a{color:rgba(0,0,0,.4);text-decoration:none}
+
+/* DRAWER */
+/* ── DESKTOP NAV ── */
+.desk-nav{display:none;align-items:center;gap:6px}
+.desk-link{font-size:.82rem;font-weight:800;color:#111;text-decoration:none;cursor:pointer;padding:6px 10px;border-radius:6px;letter-spacing:.5px;white-space:nowrap;background:none;border:none;transition:color .2s}
+.desk-link:hover,.desk-link.active{color:#1A73E8}
+.desk-link-color{font-size:.82rem;font-weight:800;color:#1A73E8;text-decoration:none;cursor:pointer;padding:6px 10px;border-radius:6px;letter-spacing:.5px;white-space:nowrap;background:none;border:none}
+.desk-link-sale{font-size:.82rem;font-weight:800;color:#F5A623;text-decoration:none;cursor:pointer;padding:6px 10px;border-radius:6px;letter-spacing:.5px;white-space:nowrap;background:none;border:none}
+/* dropdown */
+.desk-dropdown{display:none;position:fixed;left:0;right:0;background:#fff;border-top:2px solid #eee;border-bottom:2px solid #eee;z-index:300;padding:28px 60px;box-shadow:0 8px 32px rgba(0,0,0,.1);transform-origin:top;transform:scaleY(0);opacity:0;transition:transform .25s ease,opacity .25s ease}
+.desk-dropdown.open{transform:scaleY(1);opacity:1}
+.desk-drop-col{display:flex;flex-direction:column;gap:4px}
+.desk-drop-cat{font-size:.78rem;font-weight:900;color:#1A73E8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:flex;flex-direction:column}
+.desk-drop-cat::after{content:'';display:block;width:60px;height:1px;background:#aaa;margin-top:4px;opacity:.5}
+.desk-drop-link{font-size:.9rem;font-weight:600;color:#111;padding:5px 0;cursor:pointer;text-decoration:none;transition:color .15s}
+.desk-drop-link:hover{color:#1A73E8}
+.desk-drop-marca{font-size:1.5rem;font-weight:900;color:#1A73E8;padding:2px 0;cursor:pointer;text-decoration:none;display:inline-flex;flex-direction:column}
+.desk-drop-marca::after{content:'';display:block;width:100px;height:1px;background:#aaa;margin-top:2px;opacity:.5}
+.desk-overlay{display:none;position:fixed;inset:0;z-index:299;pointer-events:none}
+@media(min-width:900px){
+  .hamburger-btn{display:none!important}
+  .desk-nav{display:flex}
+  .desk-dropdown{display:block}
+  .desk-overlay{display:block;pointer-events:none}
+}
+.nav-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .3s}
+.nav-overlay.open{opacity:1;pointer-events:all}
+.nav-drawer{position:fixed;top:0;left:0;z-index:401;width:100%;height:100%;background:#fff;transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.nav-drawer.open{transform:translateX(0)}
+.nav-close{background:none;border:none;font-size:1.8rem;color:#111;cursor:pointer;padding:0}
+.nav-drawer-top{display:flex;align-items:center;justify-content:space-between;padding:14px 12px 8px 20px}
+.nav-drawer-logo{height:40px;object-fit:contain}
+.nav-drawer-body{display:flex;flex:1;overflow:hidden;position:relative}
+.nav-col-left{display:flex;flex-direction:column;padding:4px 0 4px 20px;gap:0;width:190px;flex-shrink:0;transition:opacity .2s}
+.nav-col-right{position:absolute;left:210px;top:0;bottom:0;right:0;padding:10px 16px;overflow-y:auto;display:flex;flex-direction:column;transform:translateX(-20px);opacity:0;pointer-events:none;transition:transform .3s ease,opacity .3s ease}
+.nav-col-right.active{transform:translateX(0);opacity:1;pointer-events:all}
+.nav-link-color{font-size:1.8rem;font-weight:900;color:#1A73E8;text-decoration:none;cursor:pointer;line-height:1.2;padding:3px 0;display:block}
+.nav-link-black{font-size:1.8rem;font-weight:900;color:#111;text-decoration:none;cursor:pointer;line-height:1.3;padding:3px 0;display:block}
+.nav-link-sale{font-size:1.8rem;font-weight:900;color:#F5A623;text-decoration:none;cursor:pointer;line-height:1.3;padding:3px 0;display:block}
+.nav-col-left.has-active .nav-link-color,
+.nav-col-left.has-active .nav-link-black,
+.nav-col-left.has-active .nav-link-sale{opacity:.3}
+.nav-col-left.has-active .nav-link-black.active,
+.nav-col-left.has-active .nav-link-color.active{opacity:1}
+.nav-link-black.active{color:#1A73E8}
+.nav-sub-group{display:none}.nav-sub-group.active{display:flex;flex-direction:column}
+.nav-sub-cat{font-size:1.1rem;font-weight:800;color:#1A73E8;display:inline-flex;flex-direction:column;margin-bottom:8px}
+.nav-sub-cat::after{content:'';display:block;width:80px;height:1px;background:#aaa;margin-top:3px;opacity:.5}
+.nav-sub-link{font-size:1.05rem;font-weight:500;color:#111;padding:10px 0;cursor:pointer;display:block}
+#navSubMarcas{gap:20px}
+#navSubMarcas .nav-sub-link{color:#1A73E8;display:inline-flex;flex-direction:column;font-size:1.7rem;padding:0}
+#navSubMarcas .nav-sub-link::after{content:'';display:block;width:120px;height:1px;background:#aaa;margin-top:3px;opacity:.5}
+.nav-drawer-secondary{padding:12px 0 0;border-top:1px solid #f0f0f0}
+.nav-sec-label{font-size:.82rem;color:#aaa;font-weight:700;margin-bottom:4px;display:block}
+.nav-sec-link{font-size:.95rem;color:#555;text-decoration:none;cursor:pointer;display:block;padding:3px 0}
+
+/* UBICACIÓN MODAL */
+.ub-overlay{position:fixed;top:68px;left:0;right:0;z-index:600;display:none}
+.ub-overlay.active{display:block}
+.ub-modal{background:#fff;width:100%;height:50vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.2);transform:scaleY(0);transform-origin:top center;animation:dropDown .3s ease forwards;display:flex;flex-direction:column}
+@keyframes dropDown{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
+.ub-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eee}
+.ub-title-wrap{display:flex;align-items:center;gap:12px}
+.ub-icon-box{background:#6B46C1;color:#fff;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.ub-title{font-weight:700;font-size:1rem;color:#111}
+.ub-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:#111}
+.ub-body{padding:16px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.ub-drop{width:100%;background:#f5f5f5;border:none;border-radius:10px;padding:14px 16px;font-size:.95rem;color:#999;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.ub-drop.filled{color:#111}
+.ub-guardar{width:100%;background:#111;color:#fff;border:none;border-radius:0;padding:16px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:auto}
+.ub-guardar:hover{background:#333}
+
+/* AUTH */
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #eee;margin-bottom:20px}
+.auth-tab{background:none;border:none;padding:12px;font-size:.95rem;font-weight:700;color:#aaa;cursor:pointer;border-bottom:2px solid transparent}
+.auth-tab.active{color:#111;border-bottom-color:#111}
+.auth-input{width:100%;background:#f5f5f5;border:none;border-radius:10px;padding:14px 16px;font-size:.95rem;color:#111;outline:none;margin-bottom:12px}
+.auth-input::placeholder{color:#aaa}
+.auth-input:focus{outline:2px solid #111}
+.auth-btn{width:100%;background:#111;color:#fff;border:none;border-radius:10px;padding:14px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px}
+.auth-btn:hover{background:#333}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed}
+.auth-logged{text-align:center;padding:10px 0}
+.auth-avatar{width:60px;height:60px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 12px}
+.auth-email-txt{font-size:.85rem;color:#aaa;margin-bottom:20px}
+.auth-name-txt{font-size:1.1rem;font-weight:700;color:#111;margin-bottom:4px}
+.auth-logout{width:100%;background:#f5f5f5;color:#e63000;border:none;border-radius:10px;padding:14px;font-size:1rem;font-weight:700;cursor:pointer}
+.auth-divider{text-align:center;color:#ccc;font-size:.8rem;margin:12px 0}
+
+/* CARRITO */
+.carrito-overlay{position:fixed;top:68px;left:0;right:0;z-index:700;display:none}
+.carrito-overlay.active{display:block}
+.carrito-panel{background:#fff;width:100%;height:50vh;display:flex;flex-direction:column;box-shadow:0 8px 30px rgba(0,0,0,.2);transform:scaleY(0);transform-origin:top center;animation:dropDown .3s ease forwards}
+.carrito-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #eee}
+.carrito-titulo{font-size:1.3rem;font-weight:900;color:#111}
+.carrito-badge{background:#111;color:#fff;border-radius:50%;width:22px;height:22px;font-size:.75rem;display:inline-flex;align-items:center;justify-content:center;margin-left:6px;vertical-align:middle}
+.carrito-body{flex:1;overflow-y:auto;padding:16px 20px}
+.carrito-footer{padding:16px 20px;border-top:1px solid #eee}
+.carrito-vacio{text-align:center;padding:40px 0}
+.carrito-vacio-icon{font-size:3.5rem;margin-bottom:12px}
+.carrito-vacio h3{font-size:1.1rem;font-weight:700;color:#111;margin-bottom:6px}
+.carrito-vacio p{font-size:.85rem;color:#aaa;margin-bottom:20px}
+.carrito-continuar{color:#111;font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:underline;background:none;border:none;margin-bottom:20px}
+.carrito-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#4285F4;color:#fff;border:none;border-radius:10px;padding:14px;font-size:.95rem;font-weight:700;cursor:pointer}
+.carrito-google svg{width:20px;height:20px}
+.carrito-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f0f0f0}
+.carrito-item:last-child{border-bottom:none}
+.carrito-item-img{width:72px;height:72px;border-radius:10px;object-fit:cover;background:#f5f5f5;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.carrito-item-info{flex:1;min-width:0}
+.carrito-item-marca{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:#aaa;font-weight:700}
+.carrito-item-nombre{font-size:.95rem;font-weight:700;color:#111;margin:2px 0}
+.carrito-item-det{font-size:.8rem;color:#aaa}
+.carrito-item-precio{font-size:1rem;font-weight:900;color:#111;margin-top:6px}
+.carrito-item-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between}
+.carrito-item-remove{background:none;border:none;color:#ccc;font-size:1.1rem;cursor:pointer;padding:0}
+.carrito-item-remove:hover{color:#e63000}
+.carrito-cant{display:flex;align-items:center;gap:8px}
+.carrito-cant-btn{background:#f5f5f5;border:none;border-radius:6px;width:26px;height:26px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.carrito-subtotal{display:flex;justify-content:space-between;margin-bottom:12px;font-size:1rem}
+.carrito-subtotal strong{font-size:1.1rem}
+.carrito-pagar{width:100%;background:#111;color:#fff;border:none;border-radius:12px;padding:15px;font-size:1rem;font-weight:900;cursor:pointer;letter-spacing:1px}
+.carrito-pagar:hover{background:#333}
+
+/* BARRAS TOP */
+.top-pais{text-align:center;padding:8px;font-size:.85rem;font-weight:600;color:#111;border-bottom:1px solid #eee}
+.top-aviso{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fffbeb;border-bottom:1px solid #f0e5c0;padding:10px 16px;font-size:.82rem;color:#555}
+.top-aviso a{color:#6B46C1;font-weight:700;cursor:pointer;text-decoration:underline}
+.top-aviso-close{background:none;border:none;font-size:1rem;cursor:pointer;color:#999;flex-shrink:0}
+.top-banner{background:#1A73E8;color:#fff;text-align:center;padding:10px;font-size:.85rem;font-weight:600;letter-spacing:.5px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,214,0,.3);border-radius:2px}
+
+/* BANNER CATEGORÍA */
+.cat-banner{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:10px 10px 0}
+.cb-slot{overflow:hidden;border-radius:8px;background:#111;position:relative}
+.cb-slot img{width:100%;height:100%;object-fit:cover;display:block}
+.cb-top{aspect-ratio:3/4}
+.cb-r{aspect-ratio:3/4}
+.cb-big{grid-column:1/span 3;grid-row:2/span 2}
+.cb-empty{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#333;font-size:1.5rem}
+</style>
+</head>
+<body>
+
+<!-- ===== SPLASH ===== -->
+<div id="splash">
+  <video id="splashVideo" autoplay muted loop playsinline>
+    <source src="video.mov" type="video/mp4">
+    <source src="video.mov" type="video/quicktime">
+  </video>
+  <div class="lines-bg"></div>
+  <div class="graffiti-tag g1">MONKEY</div>
+  <div class="graffiti-tag g2">SHOES</div>
+  <div class="splash-overlay">
+    <img src="boton-entrar.png" onclick="entrar()" class="splash-shoe-btn" alt="Entrar">
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <div style="height:68px"></div>
+  <header class="header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="hamburger-btn" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <img src="logo2.png" alt="MonkeyShoes Footwear" style="height:40px;object-fit:contain;cursor:pointer;margin-top:10px" onclick="cerrarTodos();window.scrollTo({top:0,behavior:'smooth'})">
+    </div>
+    <!-- NAV ESCRITORIO -->
+    <nav class="desk-nav" id="deskNav">
+      <button class="desk-link-color" onclick="abrirNewIn()">NEW IN SNEAKERS</button>
+      <button class="desk-link" id="deskHombre" onclick="selectDeskCat('hombre',this)">HOMBRE</button>
+      <button class="desk-link" id="deskMujer" onclick="selectDeskCat('mujer',this)">MUJER</button>
+      <button class="desk-link" id="deskMarcas" onclick="selectDeskCat('marcas',this)">MARCAS</button>
+      <button class="desk-link-sale" onclick="abrirSale()">SALE ⚡</button>
+    </nav>
+    <div class="header-icons">
+      <button class="icon-btn" onclick="abrirUbicacion()">
+        <svg width="20" height="20" fill="none" stroke="#111" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      </button>
+      <span class="icon-sep">·</span>
+      <button class="icon-btn icon-usuario" onclick="abrirAuth()">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+      </button>
+      <span class="icon-sep">·</span>
+      <button class="icon-btn" onclick="abrirBusqueda()">
+        <svg width="20" height="20" fill="none" stroke="#111" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+      <span class="icon-sep">·</span>
+      <button class="icon-btn" onclick="verCarrito()">
+        <svg width="20" height="20" fill="none" stroke="#111" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2H3"/><path d="M3 2l2.5 11h11L19 6H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- DROPDOWN ESCRITORIO -->
+  <div class="desk-overlay" id="deskOverlay" onclick="cerrarDeskDrop()"></div>
+  <div class="desk-dropdown" id="deskDropdown"></div>
+
+  <div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
+  <div class="nav-drawer" id="navDrawer">
+    <div class="nav-drawer-top">
+      <img src="logo2.png" alt="Logo" class="nav-drawer-logo" style="cursor:pointer" onclick="location.reload()">
+      <button class="nav-close" onclick="cerrarSubNav();toggleMenu()">✕</button>
+    </div>
+    <div class="nav-drawer-body" style="position:relative">
+      <div style="position:absolute;left:190px;top:0;bottom:0;width:1px;background:#eee;z-index:1"></div>
+      <div class="nav-col-left" id="navColLeft">
+        <a class="nav-link-color" onclick="cerrarSubNav();toggleMenu();abrirNewIn()">NEW IN SNEAKERS</a>
+        <a class="nav-link-black" id="navCatHombre" onclick="selectNavCat('hombre')">HOMBRE</a>
+        <a class="nav-link-black" id="navCatMujer" onclick="selectNavCat('mujer')">MUJER</a>
+        <a class="nav-link-black" id="navCatMarcas" onclick="selectNavCat('marcas')">MARCAS</a>
+        <a class="nav-link-sale" onclick="cerrarSubNav();toggleMenu();abrirSale()">SALE ⚡</a>
+      </div>
+      <div class="nav-col-right" id="navColRight">
+        <div class="nav-sub-group" id="navSubHombre">
+          <span class="nav-sub-cat">Calzado</span>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirCategoria('Baloncesto')">Baloncesto</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirCategoria('Fútbol')">Fútbol</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirCategoria('Running')">Running</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirCategoria('Casual')">Casual</a>
+        </div>
+        <div class="nav-sub-group" id="navSubMujer">
+          <span class="nav-sub-cat">Calzado</span>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirCategoria('Baloncesto')">Baloncesto</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirCategoria('Running')">Running</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirCategoria('Casual')">Casual</a>
+        </div>
+        <div class="nav-sub-group" id="navSubMarcas">
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirMarca('Jordan')">Jordan</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirMarca('Nike')">Nike</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirMarca('Adidas')">Adidas</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirMarca('Puma')">Puma</a>
+          <a class="nav-sub-link" onclick="cerrarSubNav();toggleMenu();abrirMarca('Reebok')">Reebok</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- MODAL AUTH -->
+<div class="ub-overlay" id="authOverlay">
+  <div class="ub-modal" id="authModal">
+    <div class="ub-header">
+      <div class="ub-title-wrap">
+        <div class="ub-icon-box" style="background:#111">👤</div>
+        <span class="ub-title" id="authTitulo">Mi cuenta</span>
+      </div>
+      <button class="ub-close" onclick="cerrarAuth()">✕</button>
+    </div>
+    <div class="ub-body" id="authBody">
+      <!-- Se rellena con JS -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MIS PEDIDOS -->
+<div class="ub-overlay" id="misPedidosOverlay">
+  <div class="ub-modal" id="misPedidosModal">
+    <div class="ub-header">
+      <div class="ub-title-wrap">
+        <div class="ub-icon-box" style="background:#111">📦</div>
+        <span class="ub-title">Mis Pedidos</span>
+      </div>
+      <button class="ub-close" onclick="cerrarMisPedidos()">✕</button>
+    </div>
+    <div class="ub-body" id="misPedidosBody">
+      <!-- Se rellena con JS -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL UBICACIÓN -->
+<div class="ub-overlay" id="ubOverlay">
+  <div class="ub-modal" id="ubModal">
+    <div class="ub-header">
+      <div class="ub-title-wrap">
+        <div class="ub-icon-box">📍</div>
+        <span class="ub-title">Elige tu ubicación</span>
+      </div>
+      <button class="ub-close" onclick="cerrarUbicacion()">✕</button>
+    </div>
+    <div class="ub-body">
+      <select class="ub-drop" id="ubPais" onchange="selPais()">
+        <option value="">País</option>
+        <option value="venezuela">Venezuela</option>
+        <option value="chile">Chile</option>
+      </select>
+      <select class="ub-drop" id="ubCiudad" onchange="selCiudad()" style="display:none">
+        <option value="">Ciudad</option>
+      </select>
+      <select class="ub-drop" id="ubParroquia" style="display:none">
+        <option value="">Zona</option>
+      </select>
+      <button class="ub-guardar" id="ubGuardar" style="display:none" onclick="guardarUbicacion()">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL BÚSQUEDA -->
+<div class="ub-overlay" id="searchOverlay">
+  <div class="ub-modal">
+    <div class="ub-header">
+      <div class="ub-title-wrap">
+        <div class="ub-icon-box" style="background:#111">🔍</div>
+        <span class="ub-title">Buscar productos</span>
+      </div>
+      <button class="ub-close" onclick="cerrarBusqueda()">✕</button>
+    </div>
+    <div class="ub-body" style="gap:12px">
+      <select class="ub-drop" id="filtroMarca">
+        <option value="">Marca</option>
+        <option value="Jordan">Jordan</option>
+        <option value="Nike">Nike</option>
+        <option value="Adidas">Adidas</option>
+        <option value="Puma">Puma</option>
+        <option value="Reebok">Reebok</option>
+      </select>
+      <input class="ub-drop" style="appearance:none;-webkit-appearance:none;background-image:none;color:#111" type="text" placeholder="Modelo" id="buscador">
+      <select class="ub-drop" id="filtroTalla">
+        <option value="">Talla</option>
+      </select>
+      <button class="ub-guardar" onclick="buscarYCerrar()">Buscar</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW IN SNEAKERS FULLSCREEN -->
+<div id="newInOverlay" style="display:none;position:fixed;top:68px;left:0;right:0;bottom:0;z-index:99;background:#fff;flex-direction:column">
+  <!-- Barra de carga -->
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#eee;z-index:10;pointer-events:none">
+    <div id="newInBar" style="height:100%;width:0%;background:#1A73E8;border-radius:2px;transition:none"></div>
+  </div>
+  <!-- Header -->
+  <div id="niHeader" style="display:none;align-items:center;gap:12px;padding:12px 16px;flex-shrink:0">
+    <button onclick="cerrarNewIn()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <span id="newInTitulo" style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#111"></span>
+  </div>
+  <div id="newInContent" style="flex:1;overflow-y:auto">
+    <div id="catBannerWrap" style="display:none;margin-bottom:8px">
+      <div id="catBanner" class="cat-banner"></div>
+    </div>
+    <div id="newInGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#eee;padding:0"></div>
+    <div id="newInEmpty" style="display:none"></div>
+    <div id="newInPagination" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:24px 20px;flex-wrap:wrap"></div>
+    <span id="newInCount" style="display:none"></span>
+    <span id="sortLabel" style="display:none"></span>
+    <div id="sortDrop" style="display:none"></div>
+  </div>
+</div>
+
+<!-- SALE OVERLAY -->
+<!-- DROPS OVERLAY -->
+<div id="dropsOverlay" style="display:none;position:fixed;top:68px;left:0;right:0;bottom:0;z-index:99;background:#fff;flex-direction:column">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;flex-shrink:0">
+    <button onclick="cerrarDropsOverlay()" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:#111">NEW IN DROPS</span>
+  </div>
+  <!-- Grid -->
+  <div style="flex:1;overflow-y:auto;padding:0 20px 30px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+
+      <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['nike-zapato1.jpg'],marca:'Nike',nombre:'Air Jordan 1 Low',precio:'$ 129.950'})">
+        <div style="position:absolute;top:10px;left:10px;background:#0d9e72;color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;letter-spacing:.5px;z-index:1">NEW</div>
+        <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer;z-index:1">♡</div>
+        <div style="background:#f5f5f5;height:380px;overflow:hidden"><img src="nike-zapato1.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="padding:12px">
+          <div style="font-size:.7rem;color:#555;margin-bottom:2px">Nike</div>
+          <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px">Air Jordan 1 Low</div>
+          <div style="font-size:.85rem;font-weight:700;color:#111">$ 129.950</div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
+        <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer;z-index:1">♡</div>
+        <div style="background:#f5f5f5;height:380px;overflow:hidden"><img src="adidas-zapato1.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="padding:12px">
+          <div style="font-size:.7rem;color:#555;margin-bottom:2px">Adidas</div>
+          <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px">Super Star Negra</div>
+          <div style="font-size:.85rem;font-weight:700;color:#111">$ 99.950</div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['aja1.jpg'],marca:'Jordan',nombre:'Air Jordan Retro',precio:'$ 149.950'})">
+        <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer;z-index:1">♡</div>
+        <div style="background:#f5f5f5;height:380px;overflow:hidden"><img src="aja1.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="padding:12px">
+          <div style="font-size:.7rem;color:#555;margin-bottom:2px">Jordan</div>
+          <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px">Air Jordan Retro</div>
+          <div style="font-size:.85rem;font-weight:700;color:#111">$ 149.950</div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['aja2.jpg'],marca:'Jordan',nombre:'Air Jordan Low SE',precio:'$ 139.950'})">
+        <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer;z-index:1">♡</div>
+        <div style="background:#f5f5f5;height:380px;overflow:hidden"><img src="aja2.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="padding:12px">
+          <div style="font-size:.7rem;color:#555;margin-bottom:2px">Jordan</div>
+          <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px">Air Jordan Low SE</div>
+          <div style="font-size:.85rem;font-weight:700;color:#111">$ 139.950</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="saleOverlay" style="display:none;position:fixed;top:68px;left:0;right:0;bottom:0;z-index:99;background:#fff;flex-direction:column">
+  <!-- Barra de carga -->
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#eee;z-index:10;pointer-events:none">
+    <div id="saleBar" style="height:100%;width:0%;background:#F5A623;border-radius:2px;transition:none"></div>
+  </div>
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#fff;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button onclick="cerrarSale()" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:#F5A623">SALE ⚡</span>
+    </div>
+    <span id="saleCount" style="font-size:.8rem;color:#888"></span>
+  </div>
+  <!-- Cinta azul -->
+  <div style="height:5px;flex-shrink:0"></div>
+  <div style="height:50px;background:#1A73E8;flex-shrink:0"></div>
+  <!-- Grid -->
+  <div id="saleContent" style="flex:1;overflow-y:auto">
+    <div id="saleGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#eee;padding:0"></div>
+    <div id="saleEmpty" style="display:none;text-align:center;padding:60px 20px">
+      <div style="font-size:2.5rem;margin-bottom:12px">⚡</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#111">No hay promociones activas</div>
+      <div style="font-size:.88rem;color:#888;margin-top:6px">Vuelve pronto para ver las ofertas</div>
+    </div>
+    <div id="salePagination" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:24px 20px;flex-wrap:wrap"></div>
+  </div>
+</div>
+
+<!-- PANEL FILTROS -->
+<div id="filtrosOverlay" onclick="cerrarFiltros()" style="display:none;position:fixed;top:68px;left:0;right:0;bottom:0;z-index:98;background:rgba(0,0,0,.4)"></div>
+<div id="filtrosPanel" style="display:none;position:fixed;top:68px;left:0;bottom:0;width:420px;max-width:95vw;background:#fff;z-index:99;flex-direction:column;transform:translateX(-100%);transition:transform .3s ease">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="background:#6B21A8;border-radius:8px;width:44px;height:44px;display:flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+      </div>
+      <span style="font-weight:900;font-size:1.3rem">Filtrar por</span>
+    </div>
+    <button onclick="cerrarFiltros()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#111;line-height:1">✕</button>
+  </div>
+  <p style="padding:0 20px 16px;font-size:.88rem;color:#555;margin:0;border-bottom:1px solid #eee">Refina tu búsqueda. Filtra y encuentra lo que necesitas.</p>
+  <!-- Acordeón -->
+  <div style="flex:1;overflow-y:auto">
+    <div class="fi-grupo" onclick="toggleFiltro('genero')">
+      <span>Género</span><span class="fi-chevron" id="chev-genero">∨</span>
+    </div>
+    <div class="fi-body" id="body-genero">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 0">
+        <label class="talla-pill"><input type="checkbox" value="Masculino" onchange="toggleTallaPill(this)" style="display:none">Hombre</label>
+        <label class="talla-pill"><input type="checkbox" value="Femenino" onchange="toggleTallaPill(this)" style="display:none">Mujer</label>
+        <label class="talla-pill"><input type="checkbox" value="Niño" onchange="toggleTallaPill(this)" style="display:none">Niño</label>
+        <label class="talla-pill"><input type="checkbox" value="Niña" onchange="toggleTallaPill(this)" style="display:none">Niña</label>
+        <label class="talla-pill"><input type="checkbox" value="Unisex" onchange="toggleTallaPill(this)" style="display:none">Unisex</label>
+      </div>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('talla')">
+      <span>Talla Calzado</span><span class="fi-chevron" id="chev-talla">∨</span>
+    </div>
+    <div class="fi-body" id="body-talla">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 0">
+        <label class="talla-pill"><input type="checkbox" value="4" onchange="toggleTallaPill(this)" style="display:none">4</label>
+        <label class="talla-pill"><input type="checkbox" value="4.5" onchange="toggleTallaPill(this)" style="display:none">4.5</label>
+        <label class="talla-pill"><input type="checkbox" value="5" onchange="toggleTallaPill(this)" style="display:none">5</label>
+        <label class="talla-pill"><input type="checkbox" value="5.5" onchange="toggleTallaPill(this)" style="display:none">5.5</label>
+        <label class="talla-pill"><input type="checkbox" value="6" onchange="toggleTallaPill(this)" style="display:none">6</label>
+        <label class="talla-pill"><input type="checkbox" value="6.5" onchange="toggleTallaPill(this)" style="display:none">6.5</label>
+        <label class="talla-pill"><input type="checkbox" value="7" onchange="toggleTallaPill(this)" style="display:none">7</label>
+        <label class="talla-pill"><input type="checkbox" value="7.5" onchange="toggleTallaPill(this)" style="display:none">7.5</label>
+        <label class="talla-pill"><input type="checkbox" value="8" onchange="toggleTallaPill(this)" style="display:none">8</label>
+        <label class="talla-pill"><input type="checkbox" value="8.5" onchange="toggleTallaPill(this)" style="display:none">8.5</label>
+        <label class="talla-pill"><input type="checkbox" value="9" onchange="toggleTallaPill(this)" style="display:none">9</label>
+        <label class="talla-pill"><input type="checkbox" value="9.5" onchange="toggleTallaPill(this)" style="display:none">9.5</label>
+        <label class="talla-pill"><input type="checkbox" value="10" onchange="toggleTallaPill(this)" style="display:none">10</label>
+        <label class="talla-pill"><input type="checkbox" value="10.5" onchange="toggleTallaPill(this)" style="display:none">10.5</label>
+        <label class="talla-pill"><input type="checkbox" value="11" onchange="toggleTallaPill(this)" style="display:none">11</label>
+        <label class="talla-pill"><input type="checkbox" value="12" onchange="toggleTallaPill(this)" style="display:none">12</label>
+        <label class="talla-pill"><input type="checkbox" value="13" onchange="toggleTallaPill(this)" style="display:none">13</label>
+        <label class="talla-pill"><input type="checkbox" value="H-3.5/M-5" onchange="toggleTallaPill(this)" style="display:none">H-3.5/M-5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-3/M-4.5" onchange="toggleTallaPill(this)" style="display:none">H-3/M-4.5</label>
+        <label class="talla-pill"><input type="checkbox" value="4Y" onchange="toggleTallaPill(this)" style="display:none">4Y</label>
+        <label class="talla-pill"><input type="checkbox" value="4.5Y" onchange="toggleTallaPill(this)" style="display:none">4.5Y</label>
+        <label class="talla-pill"><input type="checkbox" value="5Y" onchange="toggleTallaPill(this)" style="display:none">5Y</label>
+        <label class="talla-pill"><input type="checkbox" value="5.5Y" onchange="toggleTallaPill(this)" style="display:none">5.5Y</label>
+        <label class="talla-pill"><input type="checkbox" value="6Y" onchange="toggleTallaPill(this)" style="display:none">6Y</label>
+        <label class="talla-pill"><input type="checkbox" value="6.5Y" onchange="toggleTallaPill(this)" style="display:none">6.5Y</label>
+        <label class="talla-pill"><input type="checkbox" value="H-4/M-5.5" onchange="toggleTallaPill(this)" style="display:none">H-4/M-5.5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-4.5/M-6" onchange="toggleTallaPill(this)" style="display:none">H-4.5/M-6</label>
+        <label class="talla-pill"><input type="checkbox" value="H-5/M-6.5" onchange="toggleTallaPill(this)" style="display:none">H-5/M-6.5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-5.5/M-7" onchange="toggleTallaPill(this)" style="display:none">H-5.5/M-7</label>
+        <label class="talla-pill"><input type="checkbox" value="H-6/M-7.5" onchange="toggleTallaPill(this)" style="display:none">H-6/M-7.5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-6.5/M-8" onchange="toggleTallaPill(this)" style="display:none">H-6.5/M-8</label>
+        <label class="talla-pill"><input type="checkbox" value="H-7/M-8.5" onchange="toggleTallaPill(this)" style="display:none">H-7/M-8.5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-7.5/M-9" onchange="toggleTallaPill(this)" style="display:none">H-7.5/M-9</label>
+        <label class="talla-pill"><input type="checkbox" value="H-8/M-9.5" onchange="toggleTallaPill(this)" style="display:none">H-8/M-9.5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-8.5/M-10" onchange="toggleTallaPill(this)" style="display:none">H-8.5/M-10</label>
+        <label class="talla-pill"><input type="checkbox" value="H-9/M-10.5" onchange="toggleTallaPill(this)" style="display:none">H-9/M-10.5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-9.5/M-11" onchange="toggleTallaPill(this)" style="display:none">H-9.5/M-11</label>
+        <label class="talla-pill"><input type="checkbox" value="H-10/M-11.5" onchange="toggleTallaPill(this)" style="display:none">H-10/M-11.5</label>
+        <label class="talla-pill"><input type="checkbox" value="H-10.5/M-12" onchange="toggleTallaPill(this)" style="display:none">H-10.5/M-12</label>
+        <label class="talla-pill"><input type="checkbox" value="H-11/M-12.5" onchange="toggleTallaPill(this)" style="display:none">H-11/M-12.5</label>
+      </div>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('tallaropa')">
+      <span>Talla Ropa</span><span class="fi-chevron" id="chev-tallaropa">∨</span>
+    </div>
+    <div class="fi-body" id="body-tallaropa">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 0">
+        <label class="talla-pill" style="min-width:44px;height:44px;padding:0 12px;border-radius:50px"><input type="checkbox" value="XS" onchange="toggleTallaPill(this)" style="display:none">XS</label>
+        <label class="talla-pill" style="min-width:44px;height:44px;padding:0 12px;border-radius:50px"><input type="checkbox" value="S" onchange="toggleTallaPill(this)" style="display:none">S</label>
+        <label class="talla-pill" style="min-width:44px;height:44px;padding:0 12px;border-radius:50px"><input type="checkbox" value="M" onchange="toggleTallaPill(this)" style="display:none">M</label>
+        <label class="talla-pill" style="min-width:44px;height:44px;padding:0 12px;border-radius:50px"><input type="checkbox" value="L" onchange="toggleTallaPill(this)" style="display:none">L</label>
+        <label class="talla-pill" style="min-width:44px;height:44px;padding:0 12px;border-radius:50px"><input type="checkbox" value="XL" onchange="toggleTallaPill(this)" style="display:none">XL</label>
+        <label class="talla-pill" style="min-width:44px;height:44px;padding:0 12px;border-radius:50px"><input type="checkbox" value="XXL" onchange="toggleTallaPill(this)" style="display:none">XXL</label>
+      </div>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('marca')">
+      <span>Marca</span><span class="fi-chevron" id="chev-marca">∨</span>
+    </div>
+    <div class="fi-body" id="body-marca">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 0">
+        <label class="talla-pill"><input type="checkbox" value="Jordan" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">Jordan</label>
+        <label class="talla-pill"><input type="checkbox" value="Nike" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">Nike</label>
+        <label class="talla-pill"><input type="checkbox" value="Adidas" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">Adidas</label>
+        <label class="talla-pill"><input type="checkbox" value="Puma" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">Puma</label>
+        <label class="talla-pill"><input type="checkbox" value="Reebok" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">Reebok</label>
+        <label class="talla-pill"><input type="checkbox" value="New Balance" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">New Balance</label>
+        <label class="talla-pill"><input type="checkbox" value="Converse" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">Converse</label>
+        <label class="talla-pill"><input type="checkbox" value="Vans" onchange="toggleTallaPill(this);filtrarMarca(this)" style="display:none">Vans</label>
+      </div>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('tipo')">
+      <span>Tipo de producto</span><span class="fi-chevron" id="chev-tipo">∨</span>
+    </div>
+    <div class="fi-body" id="body-tipo">
+      <label class="fi-lbl"><input type="checkbox" value="Zapatillas" onchange="aplicarFiltros()"> Zapatillas</label>
+      <label class="fi-lbl"><input type="checkbox" value="Camisetas" onchange="aplicarFiltros()"> Camisetas</label>
+      <label class="fi-lbl"><input type="checkbox" value="Sandalias" onchange="aplicarFiltros()"> Sandalias</label>
+      <label class="fi-lbl"><input type="checkbox" value="Abrigos" onchange="aplicarFiltros()"> Abrigos</label>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('deporte')">
+      <span>Deporte</span><span class="fi-chevron" id="chev-deporte">∨</span>
+    </div>
+    <div class="fi-body" id="body-deporte">
+      <label class="fi-lbl"><input type="checkbox" value="Casual" onchange="aplicarFiltros()"> Casual</label>
+      <label class="fi-lbl"><input type="checkbox" value="Baloncesto" onchange="aplicarFiltros()"> Baloncesto</label>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('color')">
+      <span>Color</span><span class="fi-chevron" id="chev-color">∨</span>
+    </div>
+    <div class="fi-body" id="body-color">
+      <label class="fi-lbl"><input type="checkbox" value="Verde" onchange="aplicarFiltros()"> Verde</label>
+      <label class="fi-lbl"><input type="checkbox" value="Rojo" onchange="aplicarFiltros()"> Rojo</label>
+      <label class="fi-lbl"><input type="checkbox" value="Negro" onchange="aplicarFiltros()"> Negro</label>
+      <label class="fi-lbl"><input type="checkbox" value="Multicolor" onchange="aplicarFiltros()"> Multicolor</label>
+      <label class="fi-lbl"><input type="checkbox" value="Gris" onchange="aplicarFiltros()"> Gris</label>
+      <label class="fi-lbl"><input type="checkbox" value="Crema" onchange="aplicarFiltros()"> Crema</label>
+      <label class="fi-lbl"><input type="checkbox" value="Chocolate" onchange="aplicarFiltros()"> Chocolate</label>
+      <label class="fi-lbl"><input type="checkbox" value="Blanco" onchange="aplicarFiltros()"> Blanco</label>
+      <label class="fi-lbl"><input type="checkbox" value="Azul" onchange="aplicarFiltros()"> Azul</label>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('precio')">
+      <span>Precio</span><span class="fi-chevron" id="chev-precio">∨</span>
+    </div>
+    <div class="fi-body" id="body-precio">
+      <label class="fi-lbl"><input type="checkbox" value="0-200000" onchange="aplicarFiltros()"> Hasta $200.000</label>
+      <label class="fi-lbl"><input type="checkbox" value="200000-500000" onchange="aplicarFiltros()"> $200.000 – $500.000</label>
+      <label class="fi-lbl"><input type="checkbox" value="500000-1000000" onchange="aplicarFiltros()"> $500.000 – $1.000.000</label>
+      <label class="fi-lbl"><input type="checkbox" value="1000000-9999999" onchange="aplicarFiltros()"> Más de $1.000.000</label>
+    </div>
+    <div class="fi-grupo" onclick="toggleFiltro('oferta')" style="border-bottom:none">
+      <span>Oferta</span><span class="fi-chevron" id="chev-oferta">∨</span>
+    </div>
+    <div class="fi-body" id="body-oferta">
+      <label class="fi-lbl"><input type="checkbox" value="0-100000" onchange="aplicarFiltros()"> 0.00 - 100000.00 <span style="color:#888">(2)</span></label>
+      <label class="fi-lbl"><input type="checkbox" value="100000-200000" onchange="aplicarFiltros()"> 100000.00 - 200000.00 <span style="color:#888">(5)</span></label>
+      <label class="fi-lbl"><input type="checkbox" value="200000-300000" onchange="aplicarFiltros()"> 200000.00 - 300000.00 <span style="color:#888">(8)</span></label>
+      <label class="fi-lbl"><input type="checkbox" value="300000-400000" onchange="aplicarFiltros()"> 300000.00 - 400000.00 <span style="color:#888">(4)</span></label>
+      <label class="fi-lbl"><input type="checkbox" value="400000-500000" onchange="aplicarFiltros()"> 400000.00 - 500000.00 <span style="color:#888">(3)</span></label>
+    </div>
+  </div>
+  <!-- Botón Aplicar -->
+  <div style="padding:16px 20px;border-top:1px solid #eee">
+    <button onclick="cerrarFiltros()" style="width:100%;padding:14px;background:#111;color:#fff;border:none;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;letter-spacing:.5px">Aplicar</button>
+  </div>
+</div>
+<style>
+.fi-grupo{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eee;cursor:pointer;font-weight:700;font-size:.95rem}
+.fi-grupo:hover{background:#fafafa}
+.fi-chevron{font-size:.9rem;color:#555;transition:transform .2s}
+.fi-body{display:none;padding:4px 20px 12px;background:#fafafa}
+.fi-body.open{display:block}
+.fi-lbl{display:flex;align-items:center;gap:10px;font-size:.9rem;cursor:pointer;padding:6px 0}
+.talla-pill{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #ccc;border-radius:50px;padding:7px 14px;font-size:.82rem;font-weight:500;cursor:pointer;background:#fff;color:#111;transition:all .15s;white-space:nowrap}
+.sort-opt{display:flex;align-items:center;gap:10px;padding:13px 20px;color:#fff;font-size:.93rem;cursor:pointer;transition:background .15s}
+.sort-opt:hover{background:rgba(255,255,255,.1)}
+.sort-check{font-size:.9rem;color:#fff;width:16px;flex-shrink:0}
+.cat-shoe-item{display:inline-flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;white-space:normal;flex:0 0 calc(100% / 7);text-align:center;transition:opacity .15s}
+.cat-shoe-item:hover{opacity:.7}
+.cat-shoe-item:hover{transform:translateY(-3px)}
+.cat-shoe-img{font-size:3.4rem;line-height:1;display:flex;align-items:center;justify-content:center;width:90px;height:80px}
+.cat-shoe-img img{width:100%;height:100%;object-fit:contain}
+.cat-shoe-lbl{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:1.5px;color:#111;text-transform:uppercase}
+.talla-pill.selected{border-color:#111;background:#111;color:#fff;font-weight:700}
+</style>
+
+<!-- PANEL CARRITO -->
+<div class="carrito-overlay" id="carritoOverlay" onclick="cerrarCarrito(event)">
+  <div class="carrito-panel" id="carritoPanel">
+    <div class="carrito-header">
+      <span class="carrito-titulo">Mi Carrito <span class="carrito-badge" id="carritoBadge"></span></span>
+      <button class="ub-close" onclick="cerrarCarrito()">✕</button>
+    </div>
+    <div class="carrito-body" id="carritoBody"></div>
+    <div class="carrito-footer" id="carritoFooter"></div>
+  </div>
+</div>
+
+  <!-- BARRA SUPERIOR -->
+  <div class="top-pais">
+    <span>📍 Elige tu país</span>
+  </div>
+  <div class="top-aviso">
+    <span>⚠️ Hemos establecido una dirección genérica. Pero puede ocurrir un error con el valor del producto, si deseas cambiarla, <a onclick="abrirUbicacion()">Haz clic aquí</a></span>
+    <button class="top-aviso-close" onclick="this.parentElement.style.display='none'">✕</button>
+  </div>
+  <div class="top-banner">
+    Tienda Online de MONKEY SHOES Chile &amp; Venezuela | Sneakers, Streetwear
+  </div>
+
+  <!-- TIRA MARCAS -->
+  <div style="padding:14px 0;background:#fff;display:flex;align-items:center">
+    <button id="marcasArrIzq" onclick="scrollMarcas(-1)" style="flex-shrink:0;background:none;border:none;font-size:1.3rem;cursor:pointer;padding:0 10px;color:#555;line-height:1;opacity:.2">‹</button>
+    <div id="marcasStrip" style="flex:1;overflow:hidden">
+      <div id="marcasTrack" style="display:flex;align-items:flex-start;transition:transform .35s ease;will-change:transform">
+        <div class="cat-shoe-item" onclick="abrirMarca('Jordan')"><div class="cat-shoe-img"><img src="logo-jordan-sin-fondo.png" alt="Jordan"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Nike')"><div class="cat-shoe-img"><img src="logo-nike-sin-fondo.png" alt="Nike" style="transform:scale(1.6)"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Adidas')"><div class="cat-shoe-img"><img src="logo-adidas-sin-fondo.png" alt="Adidas"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Puma')"><div class="cat-shoe-img"><img src="logo-puma-sin-fondo.png" alt="Puma"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Reebok')"><div class="cat-shoe-img"><img src="logo-reebok-sin-fondo.png" alt="Reebok"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Vans')"><div class="cat-shoe-img"><img src="logo-vans-sin-fondo.png" alt="Vans"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('CH')"><div class="cat-shoe-img"><img src="logo-ch-sin-fondo.png" alt="CH"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Asics')"><div class="cat-shoe-img"><img src="logo-asics-sin-fondo.png" alt="Asics"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Converse')"><div class="cat-shoe-img"><img src="logo-converse-sin-fondo.png" alt="Converse"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('New Balance')"><div class="cat-shoe-img"><img src="logo-new-balance-sin-fondo.png" alt="New Balance"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Skechers')"><div class="cat-shoe-img"><img src="logo-skechers-sin-fondo.png" alt="Skechers"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Helly Hansen')"><div class="cat-shoe-img"><img src="logo-hh-sin-fondo.png" alt="Helly Hansen"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Michael Kors')"><div class="cat-shoe-img"><img src="logo-michael-kors-sin-fondo.png" alt="Michael Kors"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Nautica')"><div class="cat-shoe-img"><img src="logo-nautica-sin-fondo.png" alt="Nautica"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Hugo Boss')"><div class="cat-shoe-img"><img src="logo-hugo-boss-sin-fondo.png" alt="Hugo Boss" style="margin-top:5px"></div></div>
+        <div class="cat-shoe-item" onclick="abrirMarca('Lacoste')"><div class="cat-shoe-img"><img src="logo-lacoste-sin-fondo.png" alt="Lacoste"></div></div>
+      </div>
+    </div>
+    <button id="marcasArrDer" onclick="scrollMarcas(1)" style="flex-shrink:0;background:none;border:none;font-size:1.3rem;cursor:pointer;padding:0 10px;color:#555;line-height:1">›</button>
+  </div>
+
+  <!-- VIDEO JORDAN -->
+  <div style="margin-top:5px;width:100%;line-height:0;overflow:hidden;position:relative">
+    <video src="video-jordan-clean.mp4" autoplay muted loop playsinline style="width:100%;display:block;margin-bottom:-200px"></video>
+    <button onclick="abrirDetalle({fotos:['aja1.jpg','aja2.jpg'],marca:'Jordan',nombre:'Air Jordan Retro',precio:'$ 149.950'})" style="position:absolute;bottom:220px;left:50%;transform:translateX(-50%);background:#fff;color:#111;border:none;border-radius:30px;padding:14px 32px;font-size:.95rem;font-weight:800;cursor:pointer;letter-spacing:.5px;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3)">VER PRODUCTO →</button>
+  </div>
+
+  <!-- CINTA NEGRA -->
+  <div style="margin-top:40px;width:100%;height:50px;background:#000;display:flex;align-items:center;overflow:hidden">
+    <div style="display:flex;align-items:center;animation:cintaScroll 70s linear infinite alternate;white-space:nowrap">
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+      <div style="width:22px;height:22px;border-radius:50%;background:#1A73E8;flex-shrink:0;margin:0 12px"></div>
+      <span style="color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.3px">¡Estrena ahora y paga con: 🇨🇱 Banco Falabella, Banco Estado, Caja Vecina 🇨🇱 &nbsp;&nbsp; 🇻🇪 Binance, Efectivo 🇻🇪</span>
+    </div>
+  </div>
+  <style>
+  @keyframes cintaScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-82%); }
+  }
+  </style>
+
+  <!-- BANNER PRODUCTO DESTACADO -->
+  <div style="margin-top:30px;width:100%;height:200px;display:flex;overflow:hidden">
+    <!-- Foto izquierda -->
+    <div style="width:38%;flex-shrink:0;overflow:hidden;background:#111;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
+      <img id="bannerFoto" src="super-star-negra.png" alt="" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <!-- Panel derecho rojo -->
+    <div style="flex:1;background:#CC0000;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end">
+      <!-- Fila info pequeña -->
+      <div style="position:absolute;top:162px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;z-index:1">
+        <span style="color:#fff;font-size:.7rem;font-style:italic;font-weight:600">ADIDAS</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1px;position:relative;top:2px">MONKEY SHOES</span>
+          <div style="width:1.5px;height:18px;background:#fff"></div>
+          <img src="logo-adidas-sin-fondo.png" style="height:18px;object-fit:contain;filter:brightness(0) invert(1)">
+        </div>
+        <span style="color:#fff;font-size:.7rem;font-style:italic;font-weight:600">Super Star</span>
+      </div>
+      <!-- Texto grande -->
+      <div id="bannerTitulo" style="font-family:'Bebas Neue',sans-serif;font-size:7.5rem;line-height:.82;color:#fff;padding:0 14px 6px;padding-left:100px;letter-spacing:33px;word-break:break-word;margin-bottom:30px">SUPER STAR</div>
+    </div>
+  </div>
+
+  <!-- GALERÍA 4 FOTOS -->
+  <div style="margin-top:10px;width:100%;display:flex;gap:10px;background:#fff;padding:0 50px">
+    <div style="flex:1;overflow:hidden;aspect-ratio:3/4;background:#1a1a1a;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['nike-zapato1.jpg'],marca:'Nike',nombre:'Air Jordan 1 Low',precio:'$ 129.950'})">
+      <img src="nike-zapato1.jpg" alt="" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div style="flex:1;overflow:hidden;aspect-ratio:3/4;background:#1a1a1a;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
+      <img src="adidas-zapato1.jpg" alt="" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div style="flex:1;overflow:hidden;aspect-ratio:3/4;background:#1a1a1a;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['aja1.jpg'],marca:'Jordan',nombre:'Air Jordan Retro',precio:'$ 149.950'})">
+      <img src="aja1.jpg" alt="" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div style="flex:1;overflow:hidden;aspect-ratio:3/4;background:#1a1a1a;position:relative;cursor:pointer" onclick="abrirDetalle({fotos:['aja2.jpg'],marca:'Jordan',nombre:'Air Jordan Low SE',precio:'$ 139.950'})">
+      <img src="aja2.jpg" alt="" style="width:100%;height:100%;object-fit:cover">
+    </div>
+  </div>
+
+  <!-- NEW IN DROPS -->
+  <div style="margin-top:30px;width:100%;background:#fff;display:flex;padding:0 60px 40px">
+    <!-- Izquierda -->
+    <div style="width:220px;flex-shrink:0;padding-top:10px">
+      <div style="display:inline-flex;align-items:center;gap:0;margin-bottom:10px">
+        <span style="background:#000;color:#fff;font-size:.65rem;font-weight:700;padding:3px 7px;letter-spacing:1px">NEW IN</span>
+        <span style="border:1.5px solid #000;color:#000;font-size:.65rem;font-weight:700;padding:3px 7px;letter-spacing:1px">DROPS</span>
+      </div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:.9;color:#111;margin-bottom:20px">Drops</div>
+      <a href="#" onclick="event.preventDefault();abrirDropsOverlay()" style="display:inline-flex;align-items:center;gap:6px;border:1.5px solid #111;padding:6px 14px;font-size:.75rem;font-weight:600;color:#111;text-decoration:none">Ver Todo &nbsp;↗</a>
+    </div>
+    <!-- Carrusel -->
+    <div style="flex:1;position:relative;overflow:hidden;clip-path:inset(0)">
+      <div id="dropsTrack" style="display:flex;gap:0;transition:transform .35s ease">
+        <!-- Card 1 -->
+        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+          <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
+            <div style="position:absolute;top:10px;left:10px;background:#0d9e72;color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;letter-spacing:.5px">NEW</div>
+            <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
+            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['nike-zapato1.jpg'],marca:'Nike',nombre:'Air Jordan 1 Low',precio:'$ 129.950'})">
+              <img src="nike-zapato1.jpg" style="width:100%;height:100%;object-fit:cover">
+            </div>
+            <div style="padding:12px">
+              <div style="font-size:.7rem;color:#555;margin-bottom:2px">Nike</div>
+              <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer" onclick="abrirDetalle({fotos:['nike-zapato1.jpg'],marca:'Nike',nombre:'Air Jordan 1 Low',precio:'$ 129.950'})">Air Jordan 1 Low</div>
+              <div style="font-size:.85rem;font-weight:700;color:#111">$ 129.950</div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+          <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
+            <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
+            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
+              <img src="adidas-zapato1.jpg" style="width:100%;height:100%;object-fit:cover">
+            </div>
+            <div style="padding:12px">
+              <div style="font-size:.7rem;color:#555;margin-bottom:2px">Adidas</div>
+              <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">Super Star Negra</div>
+              <div style="font-size:.85rem;font-weight:700;color:#111">$ 99.950</div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+          <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
+            <div style="position:absolute;top:10px;left:10px;background:#0d9e72;color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;letter-spacing:.5px">NEW</div>
+            <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
+            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['aja1.jpg'],marca:'Jordan',nombre:'Air Jordan Retro',precio:'$ 149.950'})">
+              <img src="aja1.jpg" style="width:100%;height:100%;object-fit:cover">
+            </div>
+            <div style="padding:12px">
+              <div style="font-size:.7rem;color:#555;margin-bottom:2px">Jordan</div>
+              <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer" onclick="abrirDetalle({fotos:['aja1.jpg'],marca:'Jordan',nombre:'Air Jordan Retro',precio:'$ 149.950'})">Air Jordan Retro</div>
+              <div style="font-size:.85rem;font-weight:700;color:#111">$ 149.950</div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+          <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
+            <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
+            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['aja2.jpg'],marca:'Jordan',nombre:'Air Jordan Low SE',precio:'$ 139.950'})">
+              <img src="aja2.jpg" style="width:100%;height:100%;object-fit:cover">
+            </div>
+            <div style="padding:12px">
+              <div style="font-size:.7rem;color:#555;margin-bottom:2px">Jordan</div>
+              <div style="font-size:.82rem;font-weight:600;color:#111;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer" onclick="abrirDetalle({fotos:['aja2.jpg'],marca:'Jordan',nombre:'Air Jordan Low SE',precio:'$ 139.950'})">Air Jordan Low SE</div>
+              <div style="font-size:.85rem;font-weight:700;color:#111">$ 139.950</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Flechas -->
+      <button onclick="scrollDrops(-1)" style="position:absolute;left:0;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+      <button onclick="scrollDrops(1)" style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">→</button>
+    </div>
+  </div>
+
+  <!-- MONITOS -->
+  <div style="margin-top:30px;padding-left:30px;padding-right:28px">
+    <div style="overflow:hidden;position:relative">
+      <img src="monitos-sin-texto.png" style="width:100%;display:block;margin-top:-200px;margin-bottom:-247px">
+      <!-- Zonas clickeables sobre cada monito -->
+      <div style="position:absolute;inset:0;display:flex;pointer-events:none">
+        <div style="flex:1;cursor:pointer;pointer-events:all" onclick="abrirGenero('hombre')"></div>
+        <div style="flex:1;cursor:pointer;pointer-events:all" onclick="abrirGenero('mujer')"></div>
+        <div style="flex:1;cursor:pointer;pointer-events:all" onclick="abrirGenero('niño')"></div>
+        <div style="flex:1;cursor:pointer;pointer-events:all" onclick="abrirGenero('unisex')"></div>
+      </div>
+    </div>
+    <div style="display:flex;margin-top:5px">
+      <div style="flex:1;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#111;letter-spacing:2px;cursor:pointer" onclick="abrirGenero('hombre')">HOMBRES</div>
+      <div style="flex:1;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#111;letter-spacing:2px;cursor:pointer" onclick="abrirGenero('mujer')">MUJERES</div>
+      <div style="flex:1;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#111;letter-spacing:2px;cursor:pointer" onclick="abrirGenero('niño')">NIÑOS</div>
+      <div style="flex:1;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#111;letter-spacing:2px;cursor:pointer" onclick="abrirGenero('unisex')">UNISEX</div>
+    </div>
+  </div>
+
+  <script>
+  let _generoActivo = null;
+  function abrirGenero(genero) {
+    _generoActivo = genero;
+    _marcaActiva = null;
+    _categoriaActiva = null;
+    const titulo = genero === 'hombre' ? 'HOMBRES' : genero === 'mujer' ? 'MUJERES' : genero === 'niño' ? 'NIÑOS' : 'UNISEX';
+    _abrirOverlay(titulo);
+  }
+
+  let _dropsPage = 0;
+  function scrollDrops(dir) {
+    const track = document.getElementById('dropsTrack');
+    const cards = track.children.length;
+    const visible = 3;
+    const max = cards - visible;
+    _dropsPage = Math.max(0, Math.min(_dropsPage + dir, max));
+    const cardW = track.parentElement.offsetWidth / visible;
+    track.style.transform = `translateX(-${_dropsPage * (cardW + 14)}px)`;
+  }
+  </script>
+
+  <div class="productos-wrap">
+    <div class="grid-productos" id="grid">
+      <div class="loading"><div class="spinner"></div><p style="color:rgba(255,255,255,.3)">Cargando productos...</p></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div style="max-width:860px;margin:0 auto;text-align:center;color:#111;padding-bottom:30px">
+
+      <h2 id="footer-t1" style="font-size:3rem;font-weight:700;margin-bottom:14px;line-height:1.2">Calzado Original de las Mejores Marcas del Mundo</h2>
+      <p id="footer-p1" style="font-size:.92rem;color:#444;line-height:1.8;margin-bottom:36px">
+        En Monkey Shoes nos apasiona ofrecerte lo mejor del calzado original. Contamos con una amplia selección de las marcas más reconocidas del mundo, como Jordan, Nike, Adidas, Puma, ASICS, Vans, Converse, Carolina Herrera, Helly Hansen, New Balance, Lacoste, Michael Kors, Hugo Boss, Nautica, Skechers y Reebok, siempre con los modelos más nuevos y las últimas tendencias del mercado.
+      </p>
+
+      <h2 id="footer-t2" style="font-size:1.6rem;font-weight:700;margin-bottom:14px">Zapatos para Cada Estilo y Ocasión</h2>
+      <p id="footer-p2" style="font-size:.92rem;color:#444;line-height:1.8;margin-bottom:36px">
+        Cada par que encuentras en nuestra tienda es 100% original, garantizando calidad, comodidad, durabilidad y el estilo que buscas para cualquier ocasión. Ya sea que prefieras un look urbano, deportivo, casual o elegante, en Monkey Shoes encontrarás el calzado perfecto para expresar tu personalidad.
+      </p>
+
+      <h2 id="footer-t3" style="font-size:1.6rem;font-weight:700;margin-bottom:14px">Envíos ✈️ a 🇨🇱 Chile y 🇻🇪 Venezuela</h2>
+      <p id="footer-p3" style="font-size:.92rem;color:#444;line-height:1.8;margin-bottom:36px">
+        Realizamos envíos ✈️ a todo 🇨🇱 Chile y también hacemos llegar tus pedidos hasta 🇻🇪 Venezuela, brindándote una experiencia de compra rápida, segura y confiable. Nuestro compromiso es ofrecer los mejores precios del mercado, una atención personalizada y un catálogo que se actualiza constantemente con los lanzamientos más esperados de las principales marcas.
+      </p>
+
+      <h2 id="footer-t4" style="font-size:1.6rem;font-weight:700;margin-bottom:14px">Autenticidad, Moda y Buen Precio en un Solo Lugar</h2>
+      <p id="footer-p4" style="font-size:.92rem;color:#444;line-height:1.8;margin-bottom:36px">
+        Hazlo realidad con Monkey Shoes. Descubre la diferencia de comprar zapatos originales, disfruta de la mejor calidad y lleva tu estilo al siguiente nivel con la tienda donde la autenticidad, la moda y el buen precio se encuentran en un solo lugar.
+      </p>
+
+      <!-- Redes sociales -->
+      <div style="margin:30px 0 10px;display:flex;align-items:center;justify-content:center;gap:14px">
+        <!-- TikTok -->
+        <a id="footer-tiktok" href="#" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:#000;border-radius:10px;transition:transform .2s,opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.17 8.17 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a id="footer-instagram" href="#" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:10px;transition:transform .2s,opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <!-- Facebook -->
+        <a id="footer-facebook" href="#" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:#1877F2;border-radius:10px;transition:transform .2s,opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <!-- WhatsApp -->
+        <a id="footer-whatsapp" href="#" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:#25D366;border-radius:10px;transition:transform .2s,opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        </a>
+      </div>
+      <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;color:#bbb;margin-bottom:20px">SÍGUENOS EN REDES</p>
+
+      <!-- Banner publicidad -->
+      <a href="https://wa.me/573145788337?text=Hola%2C%20quiero%20una%20publicidad%20como%20la%20de%20MonkeyShoes" target="_blank" rel="noopener"
+        style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;padding:14px 20px;background:#111;border-radius:10px;text-decoration:none;border:1px solid #333;transition:opacity .2s"
+        onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:38px;height:38px;background:#25D366;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </div>
+          <div style="text-align:left">
+            <p style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:#fff;line-height:1.1">¿QUIERES UNA PUBLICIDAD COMO ESTA?</p>
+            <p style="font-size:.75rem;color:#aaa;margin-top:2px">Dale click aquí y escríbenos por WhatsApp</p>
+          </div>
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:2px;color:#25D366;flex-shrink:0;margin-left:12px">CONTÁCTANOS →</div>
+      </a>
+
+      <p style="font-size:.78rem;color:rgba(0,0,0,.3);margin-top:18px;border-top:1px solid rgba(0,0,0,.08);padding-top:20px">
+        <span id="footer-copyright">© 2026 MonkeyShoes</span> · <a id="footer-contacto-link" href="mailto:info@monkeyshoes.com" style="color:rgba(0,0,0,.4);text-decoration:none" id="footer-email">Contacto</a>
+      </p>
+    </div>
+  </footer>
+</div>
+
+<!-- ===== MODAL PRODUCTO ===== -->
+<div class="overlay" id="overlayProducto" onclick="cerrarProducto(event)">
+  <div class="modal" id="modalProducto">
+    <div class="modal-close">
+      <button class="btn-close" onclick="cerrarProducto()">✕</button>
+    </div>
+    <div class="modal-imgs" id="modalImgs"></div>
+    <div class="modal-body">
+      <div class="modal-marca" id="modalMarca"></div>
+      <div class="modal-nombre" id="modalNombre"></div>
+      <div class="modal-precio" id="modalPrecio"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="section-label">Talla</div>
+      <div class="tallas-grid" id="tallasGrid"></div>
+      <div class="section-label">Color</div>
+      <div class="colores-grid" id="coloresGrid"></div>
+      <div class="cant-row">
+        <span class="cant-label">Cantidad:</span>
+        <button class="cant-btn" onclick="cambiaCant(-1)">−</button>
+        <span class="cant-num" id="cantNum">1</span>
+        <button class="cant-btn" onclick="cambiaCant(1)">+</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-pedir" id="btnAgregarCarrito" onclick="agregarAlCarrito()">🛒 AGREGAR AL CARRITO</button>
+        <button class="btn-pedir" style="background:var(--rojo);color:#fff" id="btnPedirAhora" onclick="pedirAhora()">⚡ PEDIR AHORA</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PEDIDO ===== -->
+<div class="overlay" id="overlayPedido" onclick="cerrarPedido(event)">
+  <div class="modal" id="modalPedido">
+    <div class="modal-close">
+      <button class="btn-close" onclick="cerrarPedido()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-nombre" style="margin-bottom:16px">📦 Tu Pedido</div>
+      <div class="pedido-resumen" id="pedidoResumen"></div>
+
+      <div class="pedido-section">
+        <div class="section-label">Tus datos</div>
+        <div class="form-group">
+          <label class="form-label">Nombre completo *</label>
+          <input class="form-input" id="pNombre" placeholder="Samuel Rodríguez">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Cédula / DNI *</label>
+            <input class="form-input" id="pCedula" placeholder="12345678">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono / WhatsApp *</label>
+            <input class="form-input" id="pTelefono" type="tel" placeholder="+58 412...">
+          </div>
+        </div>
+      </div>
+
+      <div class="pedido-section">
+        <div class="section-label">Envío</div>
+        <div class="form-group">
+          <label class="form-label">País *</label>
+          <select class="form-select" id="pPais" onchange="cambiaPais()">
+            <option value="">Selecciona tu país</option>
+            <option value="venezuela">🇻🇪 Venezuela</option>
+            <option value="chile">🇨🇱 Chile</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ciudad *</label>
+          <input class="form-input" id="pCiudad" placeholder="Caracas / Santiago...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dirección completa *</label>
+          <input class="form-input" id="pDireccion" placeholder="Calle, número, sector...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Notas adicionales</label>
+        <textarea class="form-textarea" id="pNotas" placeholder="Instrucciones especiales, referencias..."></textarea>
+      </div>
+
+      <button class="btn-pedir" onclick="enviarPedido()" id="btnEnviarPedido">✅ CONFIRMAR PEDIDO</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETALLE PRODUCTO -->
+<div id="detalleOverlay" style="display:none;position:fixed;top:68px;left:0;right:0;bottom:0;z-index:99;background:#fff;overflow-y:auto">
+  <div style="display:flex;height:100%;min-height:0">
+
+    <!-- Puntitos navegación izquierda -->
+    <div id="detalleDots" style="width:36px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px 0"></div>
+
+    <!-- Imagen principal -->
+    <div style="flex:1;background:#f0f0f0;display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden">
+      <img id="detalleImgPrincipal" src="" style="max-height:90%;max-width:90%;object-fit:contain;display:block">
+    </div>
+
+    <!-- Panel info derecha -->
+    <div id="detalleInfo" style="width:380px;flex-shrink:0;padding:36px 32px;overflow-y:auto;border-left:1px solid #eee;background:#fff"></div>
+
+  </div>
+</div>
+
+<!-- GUÍA DE TALLAS OVERLAY -->
+<style>
+  #guiaTallasPanel{transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+  #guiaTallasOverlay.open #guiaTallasPanel{transform:translateX(0)}
+</style>
+<div id="guiaTallasOverlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0);transition:background .3s;justify-content:flex-end" onclick="if(event.target===this)cerrarGuiaTallas()">
+  <div id="guiaTallasPanel" style="background:#fff;width:100%;max-width:380px;height:100%;overflow:hidden;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.12)">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 22px 16px;border-bottom:1px solid #eee;flex-shrink:0">
+      <div style="font-size:1.1rem;font-weight:800;color:#111;letter-spacing:.3px">Guía de Tallas</div>
+      <button onclick="cerrarGuiaTallas()" style="border:none;background:none;font-size:1.5rem;cursor:pointer;color:#666;padding:0;line-height:1">×</button>
+    </div>
+    <!-- Tabla -->
+    <div style="overflow-y:auto;padding:0 0 24px">
+      <table style="width:100%;border-collapse:collapse;font-size:.88rem">
+        <thead>
+          <tr style="background:#111">
+            <th style="padding:12px 10px;color:#fff;font-weight:800;text-align:center">US</th>
+            <th style="padding:12px 10px;color:#fff;font-weight:800;text-align:center">cm</th>
+            <th style="padding:12px 10px;color:#fff;font-weight:800;text-align:center">EUR</th>
+            <th style="padding:12px 10px;color:#fff;font-weight:800;text-align:center">UK</th>
+            <th style="padding:12px 10px;color:#fff;font-weight:800;text-align:center">BRA</th>
+          </tr>
+        </thead>
+        <tbody id="guiaTallasBody">
+          <tr style="border-bottom:1px solid #eee"><td style="padding:11px 10px;text-align:center">7</td><td style="padding:11px 10px;text-align:center">25.5</td><td style="padding:11px 10px;text-align:center">40</td><td style="padding:11px 10px;text-align:center">6</td><td style="padding:11px 10px;text-align:center">38</td></tr>
+          <tr style="border-bottom:1px solid #eee;background:#fafafa"><td style="padding:11px 10px;text-align:center">7.5</td><td style="padding:11px 10px;text-align:center">26</td><td style="padding:11px 10px;text-align:center">40.5</td><td style="padding:11px 10px;text-align:center">6.5</td><td style="padding:11px 10px;text-align:center">39</td></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:11px 10px;text-align:center">8</td><td style="padding:11px 10px;text-align:center">26.5</td><td style="padding:11px 10px;text-align:center">41</td><td style="padding:11px 10px;text-align:center">7</td><td style="padding:11px 10px;text-align:center">39.5</td></tr>
+          <tr style="border-bottom:1px solid #eee;background:#fafafa"><td style="padding:11px 10px;text-align:center">8.5</td><td style="padding:11px 10px;text-align:center">27</td><td style="padding:11px 10px;text-align:center">42</td><td style="padding:11px 10px;text-align:center">7.5</td><td style="padding:11px 10px;text-align:center">40</td></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:11px 10px;text-align:center">9</td><td style="padding:11px 10px;text-align:center">27.5</td><td style="padding:11px 10px;text-align:center">42.5</td><td style="padding:11px 10px;text-align:center">8</td><td style="padding:11px 10px;text-align:center">40.5</td></tr>
+          <tr style="border-bottom:1px solid #eee;background:#fafafa"><td style="padding:11px 10px;text-align:center">9.5</td><td style="padding:11px 10px;text-align:center">28</td><td style="padding:11px 10px;text-align:center">43</td><td style="padding:11px 10px;text-align:center">8.5</td><td style="padding:11px 10px;text-align:center">41</td></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:11px 10px;text-align:center">10</td><td style="padding:11px 10px;text-align:center">28.5</td><td style="padding:11px 10px;text-align:center">44</td><td style="padding:11px 10px;text-align:center">9</td><td style="padding:11px 10px;text-align:center">42</td></tr>
+          <tr style="border-bottom:1px solid #eee;background:#fafafa"><td style="padding:11px 10px;text-align:center">10.5</td><td style="padding:11px 10px;text-align:center">29</td><td style="padding:11px 10px;text-align:center">44.5</td><td style="padding:11px 10px;text-align:center">9.5</td><td style="padding:11px 10px;text-align:center">42.5</td></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:11px 10px;text-align:center">11</td><td style="padding:11px 10px;text-align:center">29.5</td><td style="padding:11px 10px;text-align:center">45</td><td style="padding:11px 10px;text-align:center">10</td><td style="padding:11px 10px;text-align:center">43</td></tr>
+          <tr style="border-bottom:1px solid #eee;background:#fafafa"><td style="padding:11px 10px;text-align:center">11.5</td><td style="padding:11px 10px;text-align:center">30</td><td style="padding:11px 10px;text-align:center">45.5</td><td style="padding:11px 10px;text-align:center">10.5</td><td style="padding:11px 10px;text-align:center">43.5</td></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:11px 10px;text-align:center">12</td><td style="padding:11px 10px;text-align:center">31</td><td style="padding:11px 10px;text-align:center">46</td><td style="padding:11px 10px;text-align:center">11</td><td style="padding:11px 10px;text-align:center">44</td></tr>
+          <tr><td style="padding:11px 10px;text-align:center;background:#fafafa">13</td><td style="padding:11px 10px;text-align:center;background:#fafafa">31.5</td><td style="padding:11px 10px;text-align:center;background:#fafafa">47.5</td><td style="padding:11px 10px;text-align:center;background:#fafafa">12</td><td style="padding:11px 10px;text-align:center;background:#fafafa">46</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://xccunhxutjhoxfimbmwm.supabase.co';
+const SB_KEY = 'sb_publishable_1y6rcusxNckdkQcR47QwIA_-BVe4NaH';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+// Estado
+let productos = [];
+let productosFiltrados = [];
+let variantes = [];
+let productoActual = null;
+let tallaSeleccionada = null;
+let colorSeleccionado = null;
+let cantidadActual = 1;
+let carrito = [];
+let modoCarrito = false;
+
+// ===== AUTH =====
+let usuarioActual = null;
+
+sb.auth.onAuthStateChange((event, session) => {
+  usuarioActual = session?.user || null;
+  actualizarIconoUsuario();
+});
+
+function actualizarIconoUsuario() {
+  const iconos = document.querySelectorAll('.icon-usuario');
+  iconos.forEach(el => {
+    el.style.color = usuarioActual ? '#6B46C1' : '#111';
+  });
+}
+
+function abrirAuth() {
+  cerrarTodos();
+  renderAuth();
+  document.getElementById('authOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarAuth() {
+  document.getElementById('authOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function renderAuth() {
+  const body = document.getElementById('authBody');
+  if (usuarioActual) {
+    const nombre = usuarioActual.user_metadata?.nombre || '';
+    document.getElementById('authTitulo').textContent = 'Mi cuenta';
+    body.innerHTML = `
+      <div class="auth-logged">
+        <div class="auth-avatar">👤</div>
+        ${nombre ? `<div class="auth-name-txt">${nombre}</div>` : ''}
+        <div class="auth-email-txt">${usuarioActual.email}</div>
+        <button class="auth-btn" onclick="abrirMisPedidos()" style="background:#111;margin-bottom:10px">📦 Mis Pedidos</button>
+        <button class="auth-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>`;
+  } else {
+    document.getElementById('authTitulo').textContent = 'Mi cuenta';
+    body.innerHTML = `
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</button>
+        <button class="auth-tab" id="tabReg" onclick="switchTab('registro')">Registrarse</button>
+      </div>
+      <div id="authFormLogin">
+        <input class="auth-input" id="loginEmail" type="email" placeholder="Correo electrónico">
+        <input class="auth-input" id="loginPass" type="password" placeholder="Contraseña">
+        <button class="auth-btn" onclick="iniciarSesion()">Entrar</button>
+      </div>
+      <div id="authFormReg" style="display:none">
+        <input class="auth-input" id="regNombre" type="text" placeholder="Nombre completo">
+        <input class="auth-input" id="regEmail" type="email" placeholder="Correo electrónico">
+        <input class="auth-input" id="regPass" type="password" placeholder="Contraseña (mín. 6 caracteres)">
+        <button class="auth-btn" onclick="registrarse()">Crear cuenta</button>
+      </div>`;
+  }
+}
+
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabReg').classList.toggle('active', !isLogin);
+  document.getElementById('authFormLogin').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('authFormReg').style.display = isLogin ? 'none' : 'block';
+}
+
+async function iniciarSesion() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { toast('Completa los campos','err'); return; }
+  const btn = document.querySelector('#authFormLogin .auth-btn');
+  btn.textContent = 'Entrando...'; btn.disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.textContent = 'Entrar'; btn.disabled = false;
+  if (error) { toast('Correo o contraseña incorrectos','err'); return; }
+  cerrarAuth();
+  toast('✓ Bienvenido de vuelta','ok');
+}
+
+async function registrarse() {
+  const nombre = document.getElementById('regNombre').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if (!nombre || !email || !pass) { toast('Completa todos los campos','err'); return; }
+  if (pass.length < 6) { toast('La contraseña debe tener mínimo 6 caracteres','err'); return; }
+  const btn = document.querySelector('#authFormReg .auth-btn');
+  btn.textContent = 'Creando...'; btn.disabled = true;
+  const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { nombre } } });
+  btn.textContent = 'Crear cuenta'; btn.disabled = false;
+  if (error) { toast(error.message,'err'); return; }
+  cerrarAuth();
+  toast('✓ Cuenta creada. Revisa tu correo para verificar','ok');
+}
+
+async function cerrarSesion() {
+  await sb.auth.signOut();
+  cerrarAuth();
+  toast('Sesión cerrada','ok');
+}
+
+// ===== DATOS UBICACIÓN =====
+const UBICACION_DATA = {
+  venezuela: {
+    label_division: 'Estado',
+    label_sub: 'Parroquia',
+    ciudades: {
+      'Caracas': { division: 'Distrito Capital', subs: ['Altagracia','Antímano','Candelaria','Caricuao','Catedral','Coche','El Junquito','El Paraíso','El Recreo','El Valle','La Pastora','La Vega','Macarao','San Agustín','San Bernardino','San José','San Juan','San Pedro','Santa Rosalía','Santa Teresa','Sucre (23 de Enero)'] },
+      'Maracaibo': { division: 'Zulia', subs: ['Bolívar','Cacique Mara','Caquetío','Chiquinquirá','Cristo de Aranza','F. E. Bustamante','Idelfonso Vásquez','Juana de Ávila','Luis Hurtado Higuera','Manuel Dagnino','Olegario Villalobos','Raúl Leoni','Santa Lucía','Venancio Pulgar'] },
+      'Valencia': { division: 'Carabobo', subs: ['Candelaria','El Socorro','Miguel Peña','Negro Primero','Rafael Urdaneta','San Blas','San José','Santa Rosa','Tocuyito'] },
+      'Barquisimeto': { division: 'Lara', subs: ['Catedral','Concepción','El Cují','Juan de Villegas','Río Claro','San José','Santa Rosa','Tamaca','Unión','Xaguas'] },
+      'Maracay': { division: 'Aragua', subs: ['Andrés Eloy Blanco','El Limón','Las Delicias','Madre María de San José','Pérez Bonalde','San Casimiro','Santos Michelena','Turmero'] },
+      'Maturín': { division: 'Monagas', subs: ['Alto de los Godos','Boquerón','El Corozo','La Pica','Las Cocuizas','San Simón','Santa Cruz','Vuelta Larga'] },
+      'Barcelona': { division: 'Anzoátegui', subs: ['Chorrerón','El Carmen','Naricual','San Cristóbal','San Francisco','Santa Bárbara'] },
+      'Puerto La Cruz': { division: 'Anzoátegui', subs: ['Pozuelos','San Cristóbal','General Freites'] },
+      'El Tigre': { division: 'Anzoátegui', subs: ['El Tigre','Soledad','Anaco'] },
+      'Cumaná': { division: 'Sucre', subs: ['Altagracia','Ayamán','Gran Mariscal','Santa Inés','San Juan','Valentín Valiente'] },
+      'Carúpano': { division: 'Sucre', subs: ['Bolívar','Genovés','Muelle'] },
+      'San Cristóbal': { division: 'Táchira', subs: ['Cárdenas','La Concordia','Pedro María Morantes','San Juan Bautista','Santa Bárbara'] },
+      'Ciudad Guayana': { division: 'Bolívar', subs: ['Cachamay','Chirica','Dalla Costa','Once de Abril','Simón Bolívar','Unare','Universidad','Vista al Sol','Yocoima'] },
+      'Ciudad Bolívar': { division: 'Bolívar', subs: ['Agua Salada','Catedral','El Roble','Marhuanta','Orinoco','Sabaneta','Zea'] },
+      'Mérida': { division: 'Mérida', subs: ['Arias','Caracciolo Parra Olmedo','Jacinto Plaza','Milla','Osuna Rodríguez','Sagrario','Spinetti Dini'] },
+      'El Vigía': { division: 'Mérida', subs: ['Alberto Adriani','Domingo Peña','Gabriel Picón González','Independencia'] },
+      'Porlamar': { division: 'Nueva Esparta', subs: ['Francisco Fajardo','Maneiro'] },
+      'Juan Griego': { division: 'Nueva Esparta', subs: ['Arismendi','Marcano'] },
+      'Los Teques': { division: 'Miranda', subs: ['Cecilio Acosta','Los Teques','San José de Barlovento'] },
+      'Guarenas': { division: 'Miranda', subs: ['Guarenas','Mamporal'] },
+      'Guatire': { division: 'Miranda', subs: ['Bolívar','Caucagua'] },
+      'Petare': { division: 'Miranda', subs: ['La Dolorita','Leoncio Martínez','Petare','San Blas'] },
+      'Barinas': { division: 'Barinas', subs: ['Alto Barinas','Corazón de Jesús','El Carmen','Rómulo Betancourt','San Silvestre','Santa Lucía'] },
+      'Coro': { division: 'Falcón', subs: ['Acurigua','Baraived','Coro','La Vela de Coro','Punta Cardón'] },
+      'Punto Fijo': { division: 'Falcón', subs: ['Carirubana','Las Calderas','Norte'] },
+      'San Fernando de Apure': { division: 'Apure', subs: ['El Recreo','San Fernando','San Rafael'] },
+      'Guasdualito': { division: 'Apure', subs: ['Páez','Rómulo Gallegos'] },
+      'Valera': { division: 'Trujillo', subs: ['Carvajal','La Beatriz','La Plata','Mendoza','Mercedes Díaz','Motatán','San Luis'] },
+      'Trujillo': { division: 'Trujillo', subs: ['Carmona','Cristóbal Mendoza','La Matriz','La Pueblita'] },
+      'Guanare': { division: 'Portuguesa', subs: ['Guanare','Guanarito','San Genaro de Boconoíto'] },
+      'Acarigua': { division: 'Portuguesa', subs: ['Acarigua','Araure','Payara','Piritu'] },
+      'Tucupita': { division: 'Delta Amacuro', subs: ['Francisco Aniceto Lugo','José Vidal Marcano','Mariscal Sucre','Morichal Largo'] },
+      'Puerto Ayacucho': { division: 'Amazonas', subs: ['Atures','Fernando Girón Tovar','Parhueña','Platanillal'] },
+      'San Carlos': { division: 'Cojedes', subs: ['El Amparo','El Pao','Rómulo Gallegos','San Carlos de Austria','Tinaco'] },
+      'Tinaquillo': { division: 'Cojedes', subs: ['Tinaquillo','Libertad'] },
+      'San Juan de los Morros': { division: 'Guárico', subs: ['Ortiz','San Juan de los Morros','Zaraza'] },
+      'Calabozo': { division: 'Guárico', subs: ['Calabozo','San Lorenzo'] },
+      'San Felipe': { division: 'Yaracuy', subs: ['Cocorote','Independencia','San Felipe','Yaritagua'] },
+      'La Guaira': { division: 'La Guaira', subs: ['Caraballeda','Carayaca','Carlos Soublette','El Junko','La Guaira','Macuto','Maiquetía','Naiguatá'] },
+      'Cabimas': { division: 'Zulia', subs: ['Ambrosio','Democracia','El Carmen','Germán Ríos Linares','La Rosa','Punta Gorda','San Benito'] },
+      'Puerto Cabello': { division: 'Carabobo', subs: ['Borburata','Democracia','Fraternidad','Goaigoaza','Juan José Flores','Patanemo','Unión'] },
+      'La Victoria': { division: 'Aragua', subs: ['La Victoria','San Mateo','Zuata'] },
+      'Cagua': { division: 'Aragua', subs: ['Cagua','Las Tejerías','Santa Cruz'] },
+    }
+  },
+  chile: {
+    label_division: 'Región',
+    label_sub: 'Comuna',
+    ciudades: {
+      'Santiago': { division: 'Metropolitana de Santiago', subs: ['Cerrillos','Cerro Navia','Conchalí','El Bosque','Estación Central','Huechuraba','Independencia','La Cisterna','La Florida','La Granja','La Pintana','La Reina','Las Condes','Lo Barnechea','Lo Espejo','Lo Prado','Macul','Maipú','Ñuñoa','Pedro Aguirre Cerda','Peñalolén','Providencia','Pudahuel','Quilicura','Quinta Normal','Recoleta','Renca','San Joaquín','San Miguel','San Ramón','Vitacura'] },
+      'Valparaíso': { division: 'Valparaíso', subs: ['Valparaíso','Viña del Mar','Quilpué','Villa Alemana','Concón','San Antonio','Casablanca','Quillota','La Calera','Limache'] },
+      'Concepción': { division: 'Biobío', subs: ['Concepción','Talcahuano','Hualpén','San Pedro de la Paz','Chiguayante','Coronel','Lota','Tomé','Penco'] },
+      'Temuco': { division: 'La Araucanía', subs: ['Temuco','Padre Las Casas','Vilcún','Freire','Cunco','Lautaro','Angol','Victoria'] },
+      'Antofagasta': { division: 'Antofagasta', subs: ['Antofagasta','Calama','Tocopilla','Mejillones','Taltal','María Elena','Ollagüe','San Pedro de Atacama'] },
+      'La Serena': { division: 'Coquimbo', subs: ['La Serena','Coquimbo','Ovalle','Illapel','Andacollo','Vicuña','Paihuano','Salamanca','Los Vilos','Monte Patria'] },
+      'Rancagua': { division: "O'Higgins", subs: ['Rancagua','San Fernando','Pichilemu','Graneros','Machalí','Mostazal','Codegua','Requínoa','Rengo','San Vicente'] },
+      'Talca': { division: 'Maule', subs: ['Talca','Curicó','Linares','Constitución','Cauquenes','San Clemente','Molina','Parral','Maule','Longaví'] },
+      'Arica': { division: 'Arica y Parinacota', subs: ['Arica','Camarones','Putre','General Lagos'] },
+      'Iquique': { division: 'Tarapacá', subs: ['Iquique','Alto Hospicio','Camiña','Colchane','Huara','Pica','Pozo Almonte'] },
+      'Puerto Montt': { division: 'Los Lagos', subs: ['Puerto Montt','Puerto Varas','Osorno','Castro','Ancud','Dalcahue','Calbuco','Maullín','Llanquihue','Frutillar'] },
+      'Copiapó': { division: 'Atacama', subs: ['Copiapó','Caldera','Tierra Amarilla','Chañaral','Diego de Almagro','Vallenar','Huasco','Freirina','Alto del Carmen'] },
+      'Chillán': { division: 'Ñuble', subs: ['Chillán','Chillán Viejo','Bulnes','Quirihue','San Ignacio','El Carmen','Pinto','Coihueco','Pemuco'] },
+      'Valdivia': { division: 'Los Ríos', subs: ['Valdivia','La Unión','Río Bueno','Panguipulli','Los Lagos','Futrono','Corral','Máfil','Mariquina'] },
+      'Punta Arenas': { division: 'Magallanes', subs: ['Punta Arenas','Puerto Natales','Porvenir','Primavera','Timaukel','Torres del Paine'] },
+      'Coyhaique': { division: 'Aysén', subs: ['Coyhaique','Lago Verde','Aysén','Cisnes','Guaitecas','Chile Chico','Río Ibáñez','Cochrane','Tortel'] },
+    }
+  }
+};
+
+let paisSeleccionado = null;
+
+function abrirUbicacion() {
+  cerrarTodos();
+  document.getElementById('ubOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarUbicacion(e) {
+  document.getElementById('ubOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function selPais() {
+  const pais = document.getElementById('ubPais').value;
+  paisSeleccionado = pais;
+  const ciudad = document.getElementById('ubCiudad');
+  ciudad.innerHTML = '<option value="">Ciudad</option>';
+  document.getElementById('ubParroquia').innerHTML = '<option value="">Zona</option>';
+  document.getElementById('ubCiudad').style.display = 'none';
+  document.getElementById('ubParroquia').style.display = 'none';
+  document.getElementById('ubGuardar').style.display = 'none';
+  if (!pais) return;
+  const data = UBICACION_DATA[pais];
+  Object.keys(data.ciudades).sort().forEach(c => {
+    const o = document.createElement('option'); o.value = c; o.textContent = c; ciudad.appendChild(o);
+  });
+  document.getElementById('ubCiudad').style.display = 'block';
+  document.getElementById('ubPais').classList.add('filled');
+}
+function selCiudad() {
+  const ciudad = document.getElementById('ubCiudad').value;
+  document.getElementById('ubParroquia').style.display = 'none';
+  document.getElementById('ubGuardar').style.display = 'none';
+  if (!ciudad || !paisSeleccionado) return;
+  const data = UBICACION_DATA[paisSeleccionado];
+  const info = data.ciudades[ciudad];
+  const sel = document.getElementById('ubParroquia');
+  sel.innerHTML = '<option value="">' + data.label_sub + '</option>';
+  info.subs.sort().forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+  document.getElementById('ubParroquia').style.display = 'block';
+  document.getElementById('ubGuardar').style.display = 'block';
+  document.getElementById('ubCiudad').classList.add('filled');
+}
+function guardarUbicacion() {
+  const ciudad = document.getElementById('ubCiudad').value;
+  const parroquia = document.getElementById('ubParroquia').value;
+  if (!ciudad || !parroquia) { toast('Completa todos los campos','err'); return; }
+  cerrarUbicacion();
+  toast('✓ Ubicación guardada: ' + ciudad + ', ' + parroquia, 'ok');
+}
+
+// ===== CERRAR TODOS LOS PANELES =====
+function cerrarTodos() {
+  document.getElementById('ubOverlay').classList.remove('active');
+  document.getElementById('authOverlay').classList.remove('active');
+  document.getElementById('searchOverlay').classList.remove('active');
+  document.getElementById('carritoOverlay').classList.remove('active');
+  document.getElementById('misPedidosOverlay').classList.remove('active');
+  document.getElementById('newInOverlay').style.display = 'none';
+  document.getElementById('saleOverlay').style.display = 'none';
+  document.getElementById('detalleOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ===== MIS PEDIDOS =====
+function abrirMisPedidos() {
+  cerrarTodos();
+  document.getElementById('misPedidosOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  cargarMisPedidos();
+}
+function cerrarMisPedidos() {
+  document.getElementById('misPedidosOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+async function cargarMisPedidos() {
+  const body = document.getElementById('misPedidosBody');
+  body.innerHTML = '<div style="text-align:center;padding:50px;color:#aaa;font-size:.9rem">Cargando...</div>';
+  let query;
+  if (usuarioActual) {
+    query = sb.from('pedidos').select('*')
+      .or(`user_id.eq.${usuarioActual.id},cliente_email.eq.${usuarioActual.email}`)
+      .order('created_at', { ascending: false });
+  } else {
+    const savedIds = JSON.parse(localStorage.getItem('mk_pedidos') || '[]');
+    if (!savedIds.length) {
+      body.innerHTML = '<div style="text-align:center;padding:50px;color:#bbb;font-size:.9rem">No tienes pedidos aún</div>';
+      return;
+    }
+    query = sb.from('pedidos').select('*').in('id', savedIds).order('created_at', { ascending: false });
+  }
+  const { data, error } = await query;
+  if (error || !data?.length) {
+    body.innerHTML = '<div style="text-align:center;padding:50px;color:#bbb;font-size:.9rem">No tienes pedidos aún</div>';
+    return;
+  }
+  const estadoColor = { pendiente:'#F59E0B', pago_recibido:'#3B82F6', preparando:'#8B5CF6', enviado:'#0EA5E9', entregado:'#22C55E', cancelado:'#EF4444' };
+  const estadoLabel = { pendiente:'Pendiente', pago_recibido:'Pago recibido', preparando:'Preparando', enviado:'Enviado ✈️', entregado:'Entregado ✅', cancelado:'Cancelado' };
+  body.innerHTML = data.map(p => {
+    const items = Array.isArray(p.items) ? p.items : [];
+    const clr = estadoColor[p.estado] || '#aaa';
+    const lbl = estadoLabel[p.estado] || p.estado;
+    const fecha = new Date(p.created_at).toLocaleDateString('es-CL', { day:'2-digit', month:'short', year:'numeric' });
+    return `<div style="border:1.5px solid #f0f0f0;border-radius:14px;padding:16px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.75rem;color:#aaa">${fecha}</div>
+        <span style="background:${clr}18;color:${clr};border:1.5px solid ${clr}44;border-radius:20px;padding:3px 12px;font-size:.75rem;font-weight:700">${lbl}</span>
+      </div>
+      ${items.slice(0,2).map(it=>`<div style="font-size:.87rem;margin-bottom:4px"><strong>${it.nombre||'—'}</strong> <span style="color:#888;font-size:.78rem">T${it.talla||'?'} · ${it.color||'—'} · ×${it.cantidad||1}</span></div>`).join('')}
+      ${items.length>2?`<div style="font-size:.78rem;color:#aaa;margin-bottom:4px">+${items.length-2} producto${items.length-2!==1?'s':''} más</div>`:''}
+      <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid #f5f5f5">
+        <span style="font-size:.8rem;color:#aaa">Total</span>
+        <span style="font-weight:700;font-size:.9rem">$ ${Number(p.total||0).toLocaleString('es-CL')} <span style="font-size:.75rem;font-weight:500;color:#888">${p.moneda||''}</span></span>
+      </div>
+      ${p.numero_guia?`<div style="margin-top:12px;padding:10px 12px;background:#EFF6FF;border-radius:9px;border:1.5px solid #BFDBFE">
+        <div style="font-size:.65rem;font-weight:700;color:#3B82F6;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">📦 Número de guía</div>
+        <div style="font-weight:700;font-size:.92rem;color:#1E3A8A;letter-spacing:.5px">${p.numero_guia}</div>
+      </div>`:''}
+      ${p.foto_guia?`<div style="margin-top:10px">
+        <div style="font-size:.65rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">📸 Foto del envío</div>
+        <img src="${p.foto_guia}" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1.5px solid #eee;background:#f5f5f5;cursor:pointer" onclick="window.open('${p.foto_guia}','_blank')">
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ===== BÚSQUEDA =====
+function abrirBusqueda() {
+  cerrarTodos();
+  document.getElementById('searchOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('buscador').focus(), 300);
+}
+function cerrarBusqueda() {
+  document.getElementById('searchOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function buscarYCerrar() {
+  filtrar();
+  cerrarBusqueda();
+}
+
+// ===== NEW IN SNEAKERS =====
+const NI_PER_PAGE = 12;
+let _niTodos = [];
+let _niFiltrados = [];
+let _niPage = 1;
+let _niFiltroMarcas = [];
+
+function abrirNewIn() {
+  _categoriaActiva = null;
+  _marcaActiva = null;
+  cerrarDeskDrop();
+  _abrirOverlay('NEW IN SNEAKERS');
+}
+
+let _categoriaActiva = null;
+let _marcaActiva = null;
+function _abrirOverlay(titulo) {
+  const overlay = document.getElementById('newInOverlay');
+  const bar = document.getElementById('newInBar');
+  const content = document.getElementById('newInContent');
+  document.getElementById('newInTitulo').textContent = titulo;
+  content.style.opacity = '0';
+  overlay.style.display = 'flex';
+  document.getElementById('niHeader').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  bar.style.opacity = '1';
+  setTimeout(() => { bar.style.transition = 'width .5s ease'; bar.style.width = '40%'; }, 30);
+  setTimeout(() => { bar.style.transition = 'width .3s ease'; bar.style.width = '75%'; }, 550);
+  setTimeout(() => { bar.style.transition = 'width .35s ease'; bar.style.width = '100%'; }, 950);
+  setTimeout(() => {
+    bar.style.opacity = '0';
+    content.style.opacity = '1';
+    cargarNewIn();
+  }, 1300);
+}
+
+function _baseNewIn() {
+  let base = [..._niTodos];
+  if (_marcaActiva) {
+    base = base.filter(p => (p.marca||'').toLowerCase() === _marcaActiva.toLowerCase());
+  } else if (_categoriaActiva) {
+    const cat = _categoriaActiva.toLowerCase();
+    base = base.filter(p =>
+      (p.deporte||'').toLowerCase() === cat ||
+      (p.tipo||'').toLowerCase() === cat ||
+      (p.categoria||'').toLowerCase() === cat
+    );
+  } else if (_generoActivo) {
+    base = base.filter(p => (p.genero||'').toLowerCase().includes(_generoActivo.toLowerCase()));
+  }
+  return base;
+}
+
+
+function abrirCategoria(cat) {
+  _categoriaActiva = cat;
+  _marcaActiva = null;
+  _abrirOverlay(cat.toUpperCase());
+}
+
+function abrirMarca(marca) {
+  _marcaActiva = marca;
+  _categoriaActiva = null;
+  _abrirOverlay(marca.toUpperCase());
+}
+
+let _marcasPage = 0;
+const MARCAS_VISIBLE = 7;
+
+function scrollMarcas(dir) {
+  const track = document.getElementById('marcasTrack');
+  const strip = document.getElementById('marcasStrip');
+  const total = track.children.length;
+  const maxPage = total - MARCAS_VISIBLE;
+  _marcasPage = Math.max(0, Math.min(_marcasPage + dir, maxPage));
+  const itemW = strip.offsetWidth / MARCAS_VISIBLE;
+  track.style.transform = `translateX(-${_marcasPage * itemW}px)`;
+  // Mostrar/ocultar flechas
+  document.getElementById('marcasArrIzq').style.opacity = _marcasPage === 0 ? '0.2' : '1';
+  document.getElementById('marcasArrDer').style.opacity = _marcasPage >= maxPage ? '0.2' : '1';
+}
+
+window.addEventListener('resize', () => {
+  const track = document.getElementById('marcasTrack');
+  const strip = document.getElementById('marcasStrip');
+  if (!track || !strip) return;
+  const itemW = strip.offsetWidth / MARCAS_VISIBLE;
+  track.style.transition = 'none';
+  track.style.transform = `translateX(-${_marcasPage * itemW}px)`;
+  setTimeout(() => { track.style.transition = 'transform .35s ease'; }, 50);
+});
+
+function quitarFondoLogo(img) {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const d = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const r = d.data[i], g = d.data[i+1], b = d.data[i+2];
+    if (r > 220 && g > 220 && b > 220) d.data[i+3] = 0;
+  }
+  ctx.putImageData(d, 0, 0);
+  img.src = canvas.toDataURL('image/png');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.cat-shoe-img img').forEach(img => {
+    if (img.complete) quitarFondoLogo(img);
+    else img.addEventListener('load', () => quitarFondoLogo(img));
+  });
+});
+
+async function cargarNewIn() {
+  try {
+    const { data } = await sb.from('productos').select('*').eq('activo', true).order('created_at', { ascending: false });
+    _niTodos = data || [];
+  } catch(e) { _niTodos = []; }
+
+  if (_categoriaActiva || _marcaActiva) {
+    await renderCatBanner(_categoriaActiva || _marcaActiva);
+  } else {
+    document.getElementById('catBannerWrap').style.display = 'none';
+  }
+
+  _niFiltrados = _baseNewIn();
+  _niPage = 1;
+  ordenarNewIn();
+}
+
+async function renderCatBanner(cat) {
+  const wrap = document.getElementById('catBannerWrap');
+  const bannerEl = document.getElementById('catBanner');
+  const key = cat.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'_');
+  const slots = ['t1','t2','t3','t4','big','r1','r2'];
+  const claves = slots.map(s => `banner_${key}_${s}`);
+  let map = {};
+  try {
+    const { data } = await sb.from('contenido').select('clave,valor').in('clave', claves);
+    (data||[]).forEach(r => { map[r.clave] = r.valor; });
+  } catch(e) {}
+  const allEmpty = claves.every(c => !map[c]);
+  if (allEmpty) { wrap.style.display = 'none'; return; }
+  const slot = (s, cls) => {
+    const url = map[`banner_${key}_${s}`];
+    return `<div class="cb-slot ${cls}">${url ? `<img src="${url}" loading="lazy">` : '<div class="cb-empty">📷</div>'}</div>`;
+  };
+  bannerEl.innerHTML =
+    slot('t1','cb-top') + slot('t2','cb-top') + slot('t3','cb-top') + slot('t4','cb-top') +
+    slot('big','cb-big') + slot('r1','cb-r') + slot('r2','cb-r');
+  wrap.style.display = 'block';
+}
+
+function renderNewIn() {
+  const grid = document.getElementById('newInGrid');
+  const empty = document.getElementById('newInEmpty');
+  const countEl = document.getElementById('newInCount');
+  const total = _niFiltrados.length;
+  const desde = (_niPage - 1) * NI_PER_PAGE;
+  const hasta = Math.min(desde + NI_PER_PAGE, total);
+  const pagina = _niFiltrados.slice(desde, hasta);
+  countEl.textContent = total ? `Items ${desde+1}-${hasta} de ${total}` : '';
+  if (!pagina.length) { grid.innerHTML = ''; empty.style.display = 'block'; renderPaginacion(0); return; }
+  empty.style.display = 'none';
+  grid.innerHTML = pagina.map(p => {
+    const fotos = typeof p.fotos === 'string' ? JSON.parse(p.fotos||'[]') : (p.fotos||[]);
+    const img = fotos[0] ? `<img src="${fotos[0]}" style="width:100%;height:100%;object-fit:cover">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2.5rem">👟</div>`;
+    const esNuevo = (Date.now() - new Date(p.created_at).getTime()) < 30*24*3600*1000;
+    const badge = esNuevo ? `<span style="position:absolute;top:10px;left:10px;background:#1B5E50;color:#fff;font-size:.65rem;font-weight:800;padding:3px 7px;border-radius:2px;letter-spacing:.5px">NEW</span>` : '';
+    const precio = Number(p.precio).toLocaleString('es-CL');
+    return `<div style="background:#fff;cursor:pointer;position:relative" onclick="abrirProducto('${p.id}')">
+      <div style="position:relative;aspect-ratio:1;background:#f5f5f5;overflow:hidden">${img}${badge}
+        <button style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:1.1rem;color:#ccc;line-height:1">♡</button>
+      </div>
+      <div style="padding:10px 12px 14px">
+        <div style="font-size:.75rem;color:#555;margin-bottom:2px">${p.marca||''}</div>
+        <div style="font-weight:700;font-size:.88rem;color:#111;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nombre}</div>
+        <div style="font-size:.85rem;color:#111">$ ${precio},00</div>
+      </div>
+    </div>`;
+  }).join('');
+  renderPaginacion(total);
+}
+
+function renderPaginacion(total) {
+  const pag = document.getElementById('newInPagination');
+  const totalPags = Math.ceil(total / NI_PER_PAGE);
+  if (totalPags <= 1) { pag.innerHTML = ''; return; }
+  let html = '';
+  for (let i = 1; i <= totalPags; i++) {
+    html += `<button onclick="irPaginaNewIn(${i})" style="min-width:34px;height:34px;border-radius:6px;border:1.5px solid ${i===_niPage?'#111':'#ddd'};background:${i===_niPage?'#111':'#fff'};color:${i===_niPage?'#fff':'#111'};font-weight:700;font-size:.85rem;cursor:pointer">${i}</button>`;
+  }
+  pag.innerHTML = html;
+}
+
+function irPaginaNewIn(p) {
+  _niPage = p;
+  renderNewIn();
+  document.getElementById('newInContent').scrollTop = 0;
+}
+
+let _sortActual = 'created_at';
+
+function toggleSortDrop() {
+  const d = document.getElementById('sortDrop');
+  d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+
+function elegirOrden(val, label) {
+  _sortActual = val;
+  document.getElementById('sortLabel').textContent = label;
+  document.getElementById('sortDrop').style.display = 'none';
+  document.querySelectorAll('.sort-check').forEach(el => el.style.visibility = 'hidden');
+  const active = document.querySelector(`.sort-opt[data-val="${val}"] .sort-check`);
+  if (active) active.style.visibility = 'visible';
+  ordenarNewIn();
+}
+
+function ordenarNewIn() {
+  if (_sortActual === 'precio') _niFiltrados.sort((a,b) => a.precio - b.precio);
+  else if (_sortActual === 'oferta') _niFiltrados.sort((a,b) => (b.precio_oferta||b.precio) - (a.precio_oferta||a.precio));
+  else if (_sortActual === 'relevancia') _niFiltrados.sort((a,b) => (b.relevancia||0) - (a.relevancia||0));
+  else if (_sortActual === 'nombre') _niFiltrados.sort((a,b) => a.nombre.localeCompare(b.nombre));
+  else _niFiltrados.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+  _niPage = 1;
+  renderNewIn();
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#sortBtn') && !e.target.closest('#sortDrop')) {
+    const d = document.getElementById('sortDrop');
+    if (d) d.style.display = 'none';
+  }
+});
+
+function filtrarMarca(cb) {
+  aplicarFiltros();
+}
+
+function limpiarFiltros() {
+  document.querySelectorAll('#filtrosPanel input[type=checkbox]').forEach(c => {
+    c.checked = false;
+    const pill = c.closest('.talla-pill');
+    if (pill) pill.classList.remove('selected');
+  });
+  _niFiltrados = _baseNewIn();
+  _niPage = 1;
+  ordenarNewIn();
+}
+
+function toggleTallaPill(cb) {
+  const lbl = cb.closest('.talla-pill');
+  if (cb.checked) lbl.classList.add('selected');
+  else lbl.classList.remove('selected');
+  aplicarFiltros();
+}
+
+function toggleFiltro(id) {
+  const body = document.getElementById('body-'+id);
+  const chev = document.getElementById('chev-'+id);
+  const open = body.classList.toggle('open');
+  chev.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+function aplicarFiltros() {
+  _niFiltrados = _baseNewIn();
+
+  // Género
+  const generos = [...document.querySelectorAll('#body-genero input:checked')].map(i=>i.value);
+  if (generos.length) _niFiltrados = _niFiltrados.filter(p => generos.some(g => (p.genero||'').toLowerCase().includes(g.toLowerCase())));
+
+  // Marca (pills)
+  const marcas = [...document.querySelectorAll('#body-marca input:checked')].map(i=>i.value);
+  if (marcas.length) _niFiltrados = _niFiltrados.filter(p => marcas.includes(p.marca));
+
+  // Talla calzado
+  const tallas = [...document.querySelectorAll('#body-talla input:checked')].map(i=>i.value);
+  if (tallas.length) _niFiltrados = _niFiltrados.filter(p => (p.tallas||[]).some(t => tallas.includes(t)));
+
+  // Talla ropa
+  const tallasRopa = [...document.querySelectorAll('#body-tallaropa input:checked')].map(i=>i.value);
+  if (tallasRopa.length) _niFiltrados = _niFiltrados.filter(p => (p.tallas_ropa||[]).some(t => tallasRopa.includes(t)));
+
+  // Tipo de producto
+  const tipos = [...document.querySelectorAll('#body-tipo input:checked')].map(i=>i.value);
+  if (tipos.length) _niFiltrados = _niFiltrados.filter(p => tipos.includes(p.tipo));
+
+  // Deporte
+  const deportes = [...document.querySelectorAll('#body-deporte input:checked')].map(i=>i.value);
+  if (deportes.length) _niFiltrados = _niFiltrados.filter(p => deportes.includes(p.deporte));
+
+  // Color
+  const colores = [...document.querySelectorAll('#body-color input:checked')].map(i=>i.value);
+  if (colores.length) _niFiltrados = _niFiltrados.filter(p => colores.includes(p.color));
+
+  // Oferta (rangos de precio)
+  const rangos = [...document.querySelectorAll('#body-oferta input:checked')].map(i=>i.value);
+  if (rangos.length) _niFiltrados = _niFiltrados.filter(p => rangos.some(r => {
+    const [min,max] = r.split('-').map(Number);
+    return p.precio >= min && p.precio < max;
+  }));
+
+  _niPage = 1;
+  ordenarNewIn();
+}
+
+function abrirFiltros() {
+  document.getElementById('filtrosOverlay').style.display = 'block';
+  const panel = document.getElementById('filtrosPanel');
+  panel.style.display = 'flex';
+  setTimeout(() => panel.style.transform = 'translateX(0)', 10);
+}
+
+function cerrarFiltros() {
+  const panel = document.getElementById('filtrosPanel');
+  panel.style.transform = 'translateX(-100%)';
+  setTimeout(() => { panel.style.display = 'none'; document.getElementById('filtrosOverlay').style.display = 'none'; }, 300);
+}
+
+function newInScrollTop() { document.getElementById('newInContent').scrollTop = 0; }
+
+function cerrarNewIn() {
+  document.getElementById('newInOverlay').style.display = 'none';
+  document.getElementById('newInContent').style.opacity = '0';
+  document.body.style.overflow = '';
+}
+
+// ===== NAV ESCRITORIO =====
+const DESK_CONTENT = {
+  hombre: `<div style="display:flex;gap:60px">
+    <div class="desk-drop-col">
+      <span class="desk-drop-cat">Calzado</span>
+      <a class="desk-drop-link" onclick="cerrarDeskDrop();abrirCategoria('Baloncesto')">Baloncesto</a>
+      <a class="desk-drop-link" onclick="cerrarDeskDrop();abrirCategoria('Fútbol')">Fútbol</a>
+      <a class="desk-drop-link" onclick="cerrarDeskDrop();abrirCategoria('Running')">Running</a>
+      <a class="desk-drop-link" onclick="cerrarDeskDrop();abrirCategoria('Casual')">Casual</a>
+    </div>
+  </div>`,
+  mujer: `<div style="display:flex;gap:60px">
+    <div class="desk-drop-col">
+      <span class="desk-drop-cat">Calzado</span>
+      <a class="desk-drop-link" onclick="cerrarDeskDrop();abrirCategoria('Baloncesto')">Baloncesto</a>
+      <a class="desk-drop-link" onclick="cerrarDeskDrop();abrirCategoria('Running')">Running</a>
+      <a class="desk-drop-link" onclick="cerrarDeskDrop();abrirCategoria('Casual')">Casual</a>
+    </div>
+  </div>`,
+  marcas: `<div style="display:flex;gap:40px;align-items:flex-start">
+    <a class="desk-drop-marca" onclick="cerrarDeskDrop();abrirMarca('Jordan')">Jordan</a>
+    <a class="desk-drop-marca" onclick="cerrarDeskDrop();abrirMarca('Nike')">Nike</a>
+    <a class="desk-drop-marca" onclick="cerrarDeskDrop();abrirMarca('Adidas')">Adidas</a>
+    <a class="desk-drop-marca" onclick="cerrarDeskDrop();abrirMarca('Puma')">Puma</a>
+    <a class="desk-drop-marca" onclick="cerrarDeskDrop();abrirMarca('Reebok')">Reebok</a>
+  </div>`
+};
+let _deskCatActual = null;
+
+function selectDeskCat(cat, btn) {
+  const drop = document.getElementById('deskDropdown');
+  const overlay = document.getElementById('deskOverlay');
+  if (_deskCatActual === cat) { cerrarDeskDrop(); return; }
+  _deskCatActual = cat;
+  document.querySelectorAll('.desk-link').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  drop.innerHTML = DESK_CONTENT[cat] || '';
+  // calcular top desde la altura del header
+  const headerH = document.querySelector('.header').offsetHeight;
+  drop.style.top = headerH + 'px';
+  overlay.style.top = headerH + 'px';
+  overlay.style.pointerEvents = 'auto';
+  drop.classList.add('open');
+}
+
+function cerrarDeskDrop() {
+  _deskCatActual = null;
+  document.querySelectorAll('.desk-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('deskDropdown').classList.remove('open');
+  document.getElementById('deskOverlay').style.pointerEvents = 'none';
+}
+
+// ===== MENÚ HAMBURGUESA =====
+function toggleMenu() {
+  document.getElementById('navDrawer').classList.toggle('open');
+  document.getElementById('navOverlay').classList.toggle('open');
+}
+
+function cerrarSubNav() {
+  const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+  ['hombre','mujer','marcas'].forEach(c => {
+    document.getElementById('navSub'+cap(c)).classList.remove('active');
+    document.getElementById('navCat'+cap(c)).classList.remove('active');
+  });
+  document.getElementById('navColLeft').classList.remove('has-active');
+  document.getElementById('navColRight').classList.remove('active');
+}
+function selectNavCat(cat) {
+  const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+  const leftCol = document.getElementById('navColLeft');
+  const rightPanel = document.getElementById('navColRight');
+  const subEl = document.getElementById('navSub'+cap(cat));
+  const isOpen = subEl.classList.contains('active');
+  ['hombre','mujer','marcas'].forEach(c => {
+    document.getElementById('navSub'+cap(c)).classList.remove('active');
+    document.getElementById('navCat'+cap(c)).classList.remove('active');
+  });
+  if (!isOpen) {
+    subEl.classList.add('active');
+    document.getElementById('navCat'+cap(cat)).classList.add('active');
+    leftCol.classList.add('has-active');
+    rightPanel.classList.add('active');
+  } else {
+    leftCol.classList.remove('has-active');
+    rightPanel.classList.remove('active');
+  }
+}
+
+// ===== SPLASH =====
+function entrar() {
+  sessionStorage.setItem('entrado','1');
+  const splash = document.getElementById('splash');
+  splash.classList.add('splash-out');
+  setTimeout(() => {
+    splash.style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    cargarProductos();
+  }, 600);
+}
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('entrado')) {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    cargarProductos();
+  }
+});
+
+// ===== CARGA DATOS =====
+async function cargarProductos() {
+  try {
+    const [{ data: prods }, { data: vars }] = await Promise.all([
+      sb.from('productos').select('*').eq('activo', true).order('created_at', { ascending: false }),
+      sb.from('variantes').select('*')
+    ]);
+    productos = prods || [];
+    variantes = vars || [];
+    llenarFiltros();
+    filtrar();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('grid').innerHTML = '';
+  }
+}
+
+function llenarFiltros() {
+  const tallas = [...new Set(variantes.map(v => v.talla).filter(Boolean))].sort((a,b) => {
+    const n1 = parseFloat(a), n2 = parseFloat(b);
+    return isNaN(n1)||isNaN(n2) ? a.localeCompare(b) : n1-n2;
+  });
+  const fTalla = document.getElementById('filtroTalla');
+  fTalla.innerHTML = '<option value="">Talla</option>';
+  tallas.forEach(t => {
+    const o = document.createElement('option');
+    o.value = t; o.textContent = t;
+    fTalla.appendChild(o);
+  });
+}
+
+function filtrar() {
+  const busq = (document.getElementById('buscador').value||'').toLowerCase().trim();
+  const marca = document.getElementById('filtroMarca').value;
+  const talla = document.getElementById('filtroTalla').value;
+
+  productosFiltrados = productos.filter(p => {
+    const matchBusq = !busq || p.nombre?.toLowerCase().includes(busq) || p.marca?.toLowerCase().includes(busq);
+    const matchMarca = !marca || p.marca === marca;
+    const matchTalla = !talla || variantes.some(v => v.producto_id === p.id && v.talla === talla && v.stock > 0);
+    return matchBusq && matchMarca && matchTalla;
+  });
+
+  renderGrid();
+}
+
+function limpiarFiltros() {
+  document.getElementById('buscador').value = '';
+  document.getElementById('filtroMarca').value = '';
+  document.getElementById('filtroTalla').value = '';
+  filtrar();
+}
+
+// ===== RENDER GRID =====
+const COLOR_MAP = {
+  'negro':'#111','blanco':'#f5f5f5','rojo':'#e63000','azul':'#1565c0',
+  'verde':'#2e7d32','amarillo':'#ffd600','gris':'#757575','cafe':'#5d4037',
+  'naranja':'#e65100','rosa':'#e91e63','morado':'#6a1b9a','beige':'#d7ccc8',
+  'celeste':'#0288d1','dorado':'#ffa000','plateado':'#9e9e9e','crema':'#fff8e1'
+};
+function colorHex(nombre) {
+  if (!nombre) return '#444';
+  const n = nombre.toLowerCase();
+  for (const [k,v] of Object.entries(COLOR_MAP)) { if (n.includes(k)) return v; }
+  return '#444';
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  document.getElementById('productosCount').textContent =
+    `${productosFiltrados.length} producto${productosFiltrados.length !== 1 ? 's' : ''}`;
+
+  if (!productosFiltrados.length) {
+    grid.innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = productosFiltrados.map(p => {
+    const vars = variantes.filter(v => v.producto_id === p.id);
+    const colores = [...new Set(vars.map(v => v.color).filter(Boolean))];
+    const fotos = Array.isArray(p.fotos) ? p.fotos : (p.fotos ? [p.fotos] : []);
+    const hayStock = vars.some(v => v.stock > 0);
+    return `
+    <div class="card" onclick="abrirProducto('${p.id}')">
+      ${!hayStock ? '<div class="card-badge">Agotado</div>' : ''}
+      <button onclick="event.stopPropagation()" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:1.1rem;color:#ccc;line-height:1;z-index:2">♡</button>
+      ${fotos[0]
+        ? `<img class="card-img" src="${fotos[0]}" alt="${p.nombre}" loading="lazy">`
+        : `<div class="card-no-img">👟</div>`}
+      <div class="card-body">
+        <div class="card-marca">${p.marca||''}</div>
+        <div class="card-nombre">${p.nombre||''}</div>
+        <div class="card-precio">${formatPrecio(p.precio)} <small>${p.moneda||'CLP'}</small></div>
+        ${colores.length ? `<div class="card-colores">${colores.slice(0,5).map(c=>`<div class="color-dot" style="background:${colorHex(c)}" title="${c}"></div>`).join('')}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function formatPrecio(p) {
+  if (!p && p !== 0) return '';
+  return '$' + Number(p).toLocaleString('es-CL');
+}
+
+// ===== MODAL PRODUCTO =====
+function abrirProducto(pid) {
+  const p = productos.find(x => x.id === pid);
+  if (!p) return;
+  productoActual = p;
+  tallaSeleccionada = null;
+  colorSeleccionado = null;
+  cantidadActual = 1;
+
+  const vars = variantes.filter(v => v.producto_id === pid);
+  const fotos = Array.isArray(p.fotos) ? p.fotos : (p.fotos ? [p.fotos] : []);
+
+  document.getElementById('modalMarca').textContent = p.marca||'';
+  document.getElementById('modalNombre').textContent = p.nombre||'';
+  document.getElementById('modalPrecio').innerHTML = `${formatPrecio(p.precio)} <small>${p.moneda||'CLP'}</small>`;
+  document.getElementById('modalDesc').textContent = p.descripcion||'';
+  document.getElementById('cantNum').textContent = '1';
+
+  // Imágenes
+  document.getElementById('modalImgs').innerHTML = fotos.length
+    ? fotos.map(f=>`<img class="modal-img" src="${f}" alt="${p.nombre}">`).join('')
+    : `<div class="modal-img-placeholder">👟</div>`;
+
+  // Tallas
+  const tallas = [...new Set(vars.map(v=>v.talla).filter(Boolean))].sort((a,b)=>{
+    const n1=parseFloat(a),n2=parseFloat(b);
+    return isNaN(n1)||isNaN(n2)?a.localeCompare(b):n1-n2;
+  });
+  document.getElementById('tallasGrid').innerHTML = tallas.map(t=>{
+    const v = vars.find(x=>x.talla===t);
+    const sinStock = !v || v.stock <= 0;
+    return `<button class="talla-btn${sinStock?' sin-stock':''}" onclick="${sinStock?'':'selTalla(this,\''+t+'\')'}">${t}</button>`;
+  }).join('');
+
+  // Colores
+  const colores = [...new Set(vars.map(v=>v.color).filter(Boolean))];
+  document.getElementById('coloresGrid').innerHTML = colores.map(c=>`
+    <div class="color-btn" onclick="selColor(this,'${c}')">
+      <div class="color-circle" style="background:${colorHex(c)}"></div>
+      <div class="color-name">${c}</div>
+    </div>`).join('');
+
+  document.getElementById('overlayProducto').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function selTalla(el, talla) {
+  document.querySelectorAll('.talla-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  tallaSeleccionada = talla;
+}
+function selColor(el, color) {
+  document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  colorSeleccionado = color;
+}
+function cambiaCant(d) {
+  cantidadActual = Math.max(1, cantidadActual + d);
+  document.getElementById('cantNum').textContent = cantidadActual;
+}
+
+function cerrarProducto(e) {
+  if (e && e.target !== document.getElementById('overlayProducto')) return;
+  document.getElementById('overlayProducto').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ===== CARRITO =====
+function agregarAlCarrito() {
+  if (!tallaSeleccionada) { toast('Selecciona una talla','err'); return; }
+  if (!colorSeleccionado) { toast('Selecciona un color','err'); return; }
+  const idx = carrito.findIndex(i => i.producto.id === productoActual.id && i.talla === tallaSeleccionada && i.color === colorSeleccionado);
+  if (idx >= 0) {
+    carrito[idx].cantidad += cantidadActual;
+  } else {
+    carrito.push({ producto: productoActual, talla: tallaSeleccionada, color: colorSeleccionado, cantidad: cantidadActual });
+  }
+  actualizarCarrito();
+  cerrarProducto();
+  toast('✓ Agregado al carrito','ok');
+}
+
+function actualizarCarrito() {
+  const total = carrito.reduce((s,i)=>s+i.cantidad,0);
+  document.getElementById('cartCount').textContent = total;
+  document.getElementById('cartBtn').style.display = total > 0 ? 'flex' : 'none';
+}
+
+function verCarrito() {
+  cerrarTodos();
+  renderCarrito();
+  document.getElementById('carritoOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarCarrito() {
+  document.getElementById('carritoOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function renderCarrito() {
+  const body = document.getElementById('carritoBody');
+  const footer = document.getElementById('carritoFooter');
+  const total = carrito.reduce((s,i)=>s+i.cantidad,0);
+  document.getElementById('carritoBadge').textContent = total || '';
+  document.getElementById('carritoBadge').style.display = total ? 'inline-flex' : 'none';
+
+  if (!carrito.length) {
+    body.innerHTML = `
+      <div class="carrito-vacio">
+        <div class="carrito-vacio-icon">🛒</div>
+        <h3>No tienes ningún artículo</h3>
+        <p>Tu carrito de compras está vacío.</p>
+        <button class="carrito-continuar" onclick="cerrarCarrito()">← Continuar comprando</button>
+        ${!usuarioActual ? `
+        <div style="margin-top:16px">
+          <button class="carrito-google" onclick="loginGoogle()">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Ingresa con Google
+          </button>
+        </div>` : ''}
+      </div>`;
+    footer.innerHTML = '';
+    return;
+  }
+
+  body.innerHTML = carrito.map((item, i) => {
+    const fotos = Array.isArray(item.producto.fotos) ? item.producto.fotos : [];
+    const imgHtml = fotos[0]
+      ? `<img class="carrito-item-img" src="${fotos[0]}" alt="${item.producto.nombre}">`
+      : `<div class="carrito-item-img">👟</div>`;
+    return `
+    <div class="carrito-item">
+      ${imgHtml}
+      <div class="carrito-item-info">
+        <div class="carrito-item-marca">${item.producto.marca||''}</div>
+        <div class="carrito-item-nombre">${item.producto.nombre}</div>
+        <div class="carrito-item-det">Talla ${item.talla} · ${item.color}</div>
+        <div class="carrito-item-precio">${formatPrecio(item.producto.precio * item.cantidad)} <small style="font-size:.7rem;font-weight:400;color:#aaa">${item.producto.moneda||'CLP'}</small></div>
+        <div class="carrito-cant" style="margin-top:6px">
+          <button class="carrito-cant-btn" onclick="cambiarCantCarrito(${i},-1)">−</button>
+          <span style="font-size:.9rem;font-weight:700">${item.cantidad}</span>
+          <button class="carrito-cant-btn" onclick="cambiarCantCarrito(${i},1)">+</button>
+        </div>
+      </div>
+      <div class="carrito-item-right">
+        <button class="carrito-item-remove" onclick="quitarDelCarrito(${i})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const subtotal = carrito.reduce((s,i)=>s+i.producto.precio*i.cantidad,0);
+  footer.innerHTML = `
+    <div class="carrito-subtotal">
+      <span>Subtotal (${total} artículo${total!==1?'s':''})</span>
+      <strong>${formatPrecio(subtotal)}</strong>
+    </div>
+    <button class="carrito-pagar" onclick="irAPagar()">PROCEDER AL PAGO →</button>`;
+}
+
+function cambiarCantCarrito(i, d) {
+  carrito[i].cantidad = Math.max(1, carrito[i].cantidad + d);
+  actualizarCarrito();
+  renderCarrito();
+}
+
+function quitarDelCarrito(i) {
+  carrito.splice(i, 1);
+  actualizarCarrito();
+  renderCarrito();
+}
+
+function irAPagar() {
+  modoCarrito = true;
+  cerrarCarrito();
+  abrirPedido();
+}
+
+async function loginGoogle() {
+  await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+}
+
+// ===== PEDIDO =====
+function pedirAhora() {
+  if (!tallaSeleccionada) { toast('Selecciona una talla','err'); return; }
+  if (!colorSeleccionado) { toast('Selecciona un color','err'); return; }
+  modoCarrito = false;
+  cerrarProducto();
+  abrirPedido();
+}
+
+function abrirPedido() {
+  const items = modoCarrito ? carrito : [{
+    producto: productoActual,
+    talla: tallaSeleccionada,
+    color: colorSeleccionado,
+    cantidad: cantidadActual
+  }];
+  const total = items.reduce((s,i)=>s+i.producto.precio*i.cantidad,0);
+
+  document.getElementById('pedidoResumen').innerHTML =
+    items.map(i=>`
+    <div class="pedido-resumen-item">
+      <span>${i.cantidad}x ${i.producto.nombre} · ${i.talla} · ${i.color}</span>
+      <span>${formatPrecio(i.producto.precio * i.cantidad)}</span>
+    </div>`).join('') +
+    `<div class="pedido-resumen-item"><span>TOTAL</span><span style="color:var(--amarillo)">${formatPrecio(total)} ${items[0]?.producto?.moneda||'CLP'}</span></div>`;
+
+  document.getElementById('overlayPedido').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarPedido(e) {
+  if (e && e.target !== document.getElementById('overlayPedido')) return;
+  document.getElementById('overlayPedido').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function cambiaPais() {}
+
+async function enviarPedido() {
+  const nombre = document.getElementById('pNombre').value.trim();
+  const cedula = document.getElementById('pCedula').value.trim();
+  const telefono = document.getElementById('pTelefono').value.trim();
+  const pais = document.getElementById('pPais').value;
+  const ciudad = document.getElementById('pCiudad').value.trim();
+  const direccion = document.getElementById('pDireccion').value.trim();
+  const notas = document.getElementById('pNotas').value.trim();
+
+  if (!nombre||!cedula||!telefono||!pais||!ciudad||!direccion) {
+    toast('Completa todos los campos obligatorios','err'); return;
+  }
+
+  const pedidoItems = modoCarrito ? carrito : [{
+    producto: productoActual, talla: tallaSeleccionada,
+    color: colorSeleccionado, cantidad: cantidadActual
+  }];
+  const total = pedidoItems.reduce((s,i)=>s+i.producto.precio*i.cantidad,0);
+  const moneda = pedidoItems[0]?.producto?.moneda || 'CLP';
+
+  const btn = document.getElementById('btnEnviarPedido');
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+
+  try {
+    const itemsJson = pedidoItems.map(i => ({
+      producto_id: i.producto.id,
+      nombre: i.producto.nombre,
+      marca: i.producto.marca,
+      precio: i.producto.precio,
+      talla: i.talla,
+      color: i.color,
+      cantidad: i.cantidad
+    }));
+
+    const { data: pedidoData, error } = await sb.from('pedidos').insert({
+      cliente_nombre: nombre,
+      cliente_cedula: cedula,
+      cliente_telefono: telefono,
+      cliente_email: usuarioActual?.email || null,
+      user_id: usuarioActual?.id || null,
+      pais,
+      ciudad,
+      direccion,
+      notas,
+      items: itemsJson,
+      total,
+      moneda,
+      estado: 'pendiente'
+    }).select('id').single();
+
+    if (error) throw error;
+
+    if (pedidoData?.id) {
+      const savedIds = JSON.parse(localStorage.getItem('mk_pedidos') || '[]');
+      savedIds.unshift(pedidoData.id);
+      localStorage.setItem('mk_pedidos', JSON.stringify(savedIds.slice(0, 20)));
+    }
+
+    if (modoCarrito) { carrito = []; actualizarCarrito(); }
+    cerrarPedido();
+    toast('✅ ¡Pedido enviado! Te contactaremos pronto','ok');
+    limpiarFormPedido();
+  } catch(e) {
+    console.error(e);
+    toast('Error al enviar. Intenta de nuevo','err');
+  } finally {
+    btn.textContent = '✅ CONFIRMAR PEDIDO'; btn.disabled = false;
+  }
+}
+
+function limpiarFormPedido() {
+  ['pNombre','pCedula','pTelefono','pCiudad','pDireccion','pNotas'].forEach(id=>{
+    document.getElementById(id).value='';
+  });
+  document.getElementById('pPais').value='';
+}
+
+// ===== DETALLE PRODUCTO =====
+let _detalleFotos = [];
+let _detalleIdx = 0;
+
+function abrirDetalle(prod) {
+  _detalleFotos = prod.fotos || [];
+  _detalleIdx = 0;
+
+  // Puntitos
+  const dotsEl = document.getElementById('detalleDots');
+  dotsEl.innerHTML = _detalleFotos.map((f, i) => `
+    <div id="ddot_${i}" onclick="selFotoDetalle(${i})" style="width:10px;height:10px;border-radius:50%;cursor:pointer;flex-shrink:0;transition:background .15s;background:${i===0?'#111':'#ccc'}"></div>
+  `).join('');
+
+  // Imagen principal
+  document.getElementById('detalleImgPrincipal').src = _detalleFotos[0] || '';
+
+  // Panel info
+  const tallas = prod.tallas || ['7','7.5','8','8.5','9','9.5','10','10.5','11','12'];
+  document.getElementById('detalleInfo').innerHTML = `
+    <div style="font-size:.8rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">${prod.marca||''}</div>
+    <div style="font-size:1.7rem;font-weight:800;color:#111;line-height:1.2;margin-bottom:18px">${prod.nombre||''}</div>
+    <div style="font-size:1.4rem;font-weight:700;color:#111;margin-bottom:6px">${prod.precio||''}</div>
+    <div style="height:1px;background:#eee;margin:20px 0"></div>
+
+    <!-- Métodos de Pago Chile -->
+    <div style="font-size:1rem;font-weight:800;color:#111;margin-bottom:14px">Métodos de Pago 🇨🇱 Chile</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+      <div style="display:flex;align-items:center;gap:5px;border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 10px">
+        <svg width="34" height="22" viewBox="0 0 38 24"><rect width="38" height="24" rx="4" fill="#1A1F71"/><text x="19" y="16" text-anchor="middle" fill="#fff" font-size="9" font-family="Arial" font-weight="bold" letter-spacing="1">VISA</text></svg>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 10px">
+        <svg width="34" height="22" viewBox="0 0 38 24"><rect width="38" height="24" rx="4" fill="#fff"/><circle cx="14" cy="12" r="8" fill="#EB001B"/><circle cx="24" cy="12" r="8" fill="#F79E1B"/><path d="M19 6.27a8 8 0 0 1 0 11.46A8 8 0 0 1 19 6.27z" fill="#FF5F00"/></svg>
+      </div>
+      <div style="border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 10px;font-size:.75rem;font-weight:700;color:#003087;background:#fff">Banco<br>Falabella</div>
+      <div style="border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 10px;font-size:.75rem;font-weight:700;color:#e30613;background:#fff">Banco<br>Estado</div>
+      <div style="border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 10px;font-size:.75rem;font-weight:700;color:#006633;background:#fff">Caja<br>Vecina</div>
+    </div>
+
+    <div style="height:1px;background:#eee;margin-bottom:20px"></div>
+
+    <!-- Métodos de Pago Venezuela -->
+    <div style="font-size:1rem;font-weight:800;color:#111;margin-bottom:14px">Métodos de Pago 🇻🇪 Venezuela</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+      <div style="border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 12px;font-size:.75rem;font-weight:700;color:#F0B90B;background:#0B0E11">Binance</div>
+      <div style="border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 12px;font-size:.75rem;font-weight:700;color:#111;background:#fff">Efectivo</div>
+      <div style="border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 12px;font-size:.75rem;font-weight:700;color:#2ca5e0;background:#fff">Zelle</div>
+      <div style="border:1.5px solid #e0e0e0;border-radius:6px;padding:6px 12px;font-size:.75rem;font-weight:700;color:#005ea6;background:#fff">Pago Móvil</div>
+    </div>
+
+    <div style="height:1px;background:#eee;margin-bottom:20px"></div>
+
+    <!-- Selector de tallas -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:1rem;font-weight:800;color:#111">Selecciona tu talla</div>
+      <a href="#" onclick="event.preventDefault();abrirGuiaTallas()" style="font-size:.82rem;color:#1A73E8;text-decoration:underline">Guía de tallas</a>
+    </div>
+    <div id="detalleTallas" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px"></div>
+
+    <div style="height:1px;background:#eee;margin-bottom:20px"></div>
+    <div style="display:flex;align-items:center;gap:10px;border:1.5px solid #111;border-radius:8px;padding:14px 16px;margin-bottom:12px;cursor:pointer;background:#fff">
+      <span style="font-size:1.1rem">✈️</span>
+      <div>
+        <div style="font-size:.85rem;font-weight:700;color:#111">Envío a domicilio</div>
+        <div style="font-size:.75rem;color:#666;margin-top:2px">🇨🇱 Chile y 🇻🇪 Venezuela</div>
+      </div>
+    </div>
+  `;
+
+  // Renderizar tallas
+  let _tallaSel = null;
+  const tallasEl = document.getElementById('detalleTallas');
+  tallasEl.innerHTML = tallas.map(t => `
+    <div class="dtalla" data-t="${t}" onclick="selDetalleTalla(this)" style="width:46px;height:46px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#111;cursor:pointer;transition:all .15s;flex-shrink:0">${t}</div>
+  `).join('');
+
+  document.getElementById('detalleOverlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function selFotoDetalle(idx) {
+  _detalleIdx = idx;
+  document.getElementById('detalleImgPrincipal').src = _detalleFotos[idx];
+  document.querySelectorAll('[id^="ddot_"]').forEach((el, i) => {
+    el.style.background = i === idx ? '#111' : '#ccc';
+  });
+}
+
+function selDetalleTalla(el) {
+  document.querySelectorAll('.dtalla').forEach(d => {
+    d.style.background = '';
+    d.style.color = '#111';
+    d.style.borderColor = '#ccc';
+  });
+  el.style.background = '#6B46C1';
+  el.style.color = '#fff';
+  el.style.borderColor = '#6B46C1';
+}
+
+function cerrarDetalle() {
+  document.getElementById('detalleOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function abrirGuiaTallas() {
+  const el = document.getElementById('guiaTallasOverlay');
+  el.style.display = 'flex';
+  requestAnimationFrame(() => {
+    el.classList.add('open');
+    el.style.background = 'rgba(0,0,0,.5)';
+  });
+}
+
+function cerrarGuiaTallas() {
+  const el = document.getElementById('guiaTallasOverlay');
+  el.classList.remove('open');
+  el.style.background = 'rgba(0,0,0,0)';
+  setTimeout(() => { el.style.display = 'none'; }, 300);
+}
+
+// ===== DROPS OVERLAY =====
+function abrirDropsOverlay() {
+  document.getElementById('dropsOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function cerrarDropsOverlay() {
+  document.getElementById('dropsOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ===== SALE =====
+let _saleTodos = [];
+let _salePage = 1;
+const SALE_PER_PAGE = 20;
+
+function abrirSale() {
+  cerrarSubNav && cerrarSubNav();
+  if (typeof cerrarDeskDrop === 'function') cerrarDeskDrop();
+  const overlay = document.getElementById('saleOverlay');
+  const bar = document.getElementById('saleBar');
+  const content = document.getElementById('saleContent');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  bar.style.opacity = '1';
+  setTimeout(() => { bar.style.transition = 'width .5s ease'; bar.style.width = '40%'; }, 30);
+  setTimeout(() => { bar.style.transition = 'width .3s ease'; bar.style.width = '75%'; }, 550);
+  setTimeout(() => { bar.style.transition = 'width .35s ease'; bar.style.width = '100%'; }, 950);
+  setTimeout(() => { bar.style.opacity = '0'; content.style.opacity = '1'; cargarSale(); }, 1300);
+}
+
+function cerrarSale() {
+  document.getElementById('saleOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function cargarSale() {
+  try {
+    const { data } = await sb.from('productos').select('*').eq('activo', true).not('precio_oferta', 'is', null);
+    _saleTodos = (data || []).filter(p => p.precio_oferta && Number(p.precio_oferta) < Number(p.precio));
+  } catch(e) { _saleTodos = []; }
+  _salePage = 1;
+  renderSale();
+}
+
+function renderSale() {
+  const grid = document.getElementById('saleGrid');
+  const empty = document.getElementById('saleEmpty');
+  const countEl = document.getElementById('saleCount');
+  const total = _saleTodos.length;
+  const desde = (_salePage - 1) * SALE_PER_PAGE;
+  const hasta = Math.min(desde + SALE_PER_PAGE, total);
+  const pagina = _saleTodos.slice(desde, hasta);
+  countEl.textContent = total ? `${total} producto${total > 1 ? 's' : ''} en oferta` : '';
+  if (!pagina.length) { grid.innerHTML = ''; empty.style.display = 'block'; document.getElementById('salePagination').innerHTML = ''; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = pagina.map(p => {
+    const fotos = typeof p.fotos === 'string' ? JSON.parse(p.fotos||'[]') : (p.fotos||[]);
+    const img = fotos[0] ? `<img src="${fotos[0]}" style="width:100%;height:100%;object-fit:cover">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2.5rem">👟</div>`;
+    const precioNormal = Number(p.precio).toLocaleString('es-CL');
+    const precioOferta = Number(p.precio_oferta).toLocaleString('es-CL');
+    const descPct = Math.round((1 - p.precio_oferta / p.precio) * 100);
+    return `<div style="background:#fff;cursor:pointer;position:relative" onclick="abrirProducto('${p.id}')">
+      <div style="position:relative;aspect-ratio:1;background:#f5f5f5;overflow:hidden">${img}
+        <span style="position:absolute;top:10px;left:10px;background:#F5A623;color:#fff;font-size:.65rem;font-weight:800;padding:3px 7px;border-radius:2px;letter-spacing:.5px">-${descPct}%</span>
+        <button style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:1.1rem;color:#ccc;line-height:1">♡</button>
+      </div>
+      <div style="padding:10px 12px 14px">
+        <div style="font-size:.75rem;color:#555;margin-bottom:2px">${p.marca||''}</div>
+        <div style="font-weight:700;font-size:.88rem;color:#111;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nombre}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:.85rem;color:#F5A623;font-weight:700">$ ${precioOferta},00</span>
+          <span style="font-size:.75rem;color:#aaa;text-decoration:line-through">$ ${precioNormal},00</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  // Paginación
+  const pag = document.getElementById('salePagination');
+  const totalPags = Math.ceil(total / SALE_PER_PAGE);
+  if (totalPags <= 1) { pag.innerHTML = ''; return; }
+  let html = '';
+  for (let i = 1; i <= totalPags; i++) {
+    html += `<button onclick="_salePage=${i};renderSale();document.getElementById('saleContent').scrollTop=0" style="min-width:34px;height:34px;border-radius:6px;border:1.5px solid ${i===_salePage?'#F5A623':'#ddd'};background:${i===_salePage?'#F5A623':'#fff'};color:${i===_salePage?'#fff':'#111'};font-weight:700;font-size:.85rem;cursor:pointer">${i}</button>`;
+  }
+  pag.innerHTML = html;
+}
+
+// ===== TOAST =====
+let toastTimer;
+function toast(msg, tipo='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (tipo ? ' '+tipo : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 3000);
+}
+</script>
+
+<!-- BOTÓN WHATSAPP FLOTANTE -->
+<a id="wsp-fab" href="https://wa.me/00000000000?text=Hola%2C%20necesito%20soporte%20con%20mi%20pedido%20en%20MonkeyShoes%20%F0%9F%91%9F" target="_blank" rel="noopener" title="Soporte de pedidos">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <span>Soporte</span>
+</a>
+<style>
+#wsp-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 9999;
+  background: #25D366;
+  color: #fff;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 18px 13px 14px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: .88rem;
+  box-shadow: 0 4px 20px rgba(37,211,102,.45);
+  transition: transform .2s, box-shadow .2s;
+}
+#wsp-fab { animation: wsp-bounce 2s infinite; }
+#wsp-fab:hover { animation: none; transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,.6); }
+@keyframes wsp-bounce {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  20%      { transform: translateY(-6px) rotate(-4deg); }
+  40%      { transform: translateY(-10px) rotate(3deg); }
+  60%      { transform: translateY(-5px) rotate(-2deg); }
+  80%      { transform: translateY(-2px) rotate(1deg); }
+}
+</style>
+</body>
+</html>

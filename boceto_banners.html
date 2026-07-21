@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boceto — Banners MonkeyShoes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  --bg:#080808;
+  --surface:#111111;
+  --surface2:#181818;
+  --border:#1f1f1f;
+  --text:#eeeeec;
+  --muted:#555;
+  --accent:#C7FF3C;
+  --phone-bg:#fff;
+}
+
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh}
+
+/* ── Presentation header ─────────────────────────────── */
+.pres-hdr{
+  padding:36px 36px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.ph-eyebrow{font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+.ph-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:4px;color:#fff;line-height:1}
+.ph-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.chip{font-size:10px;padding:3px 9px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);letter-spacing:.4px}
+.chip b{color:var(--text)}
+.ph-meta{font-size:11px;color:var(--muted);line-height:1.8;text-align:right;flex-shrink:0}
+
+/* ── Main 2-col ──────────────────────────────────────── */
+.layout{display:grid;grid-template-columns:240px 1fr}
+@media(max-width:700px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{height:auto;position:static;border-right:none;border-bottom:1px solid var(--border);padding:16px}
+  .sidebar .brand-list{flex-direction:row;flex-wrap:wrap}
+}
+
+/* ── Sidebar ─────────────────────────────────────────── */
+.sidebar{
+  border-right:1px solid var(--border);
+  padding:24px 18px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.s-section{margin-bottom:28px}
+.s-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px;padding-left:8px}
+.brand-list{display:flex;flex-direction:column;gap:1px}
+.brand-btn{
+  background:none;border:none;cursor:pointer;
+  padding:7px 10px;border-radius:6px;text-align:left;
+  font-family:'Inter',sans-serif;font-size:12.5px;color:var(--muted);
+  transition:all .13s;letter-spacing:.2px;width:100%;
+}
+.brand-btn:hover{background:var(--surface2);color:var(--text)}
+.brand-btn.active{background:var(--accent);color:#000;font-weight:700}
+
+/* ── Preview ─────────────────────────────────────────── */
+.preview{
+  padding:32px 28px;
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+}
+
+/* ── Controls ────────────────────────────────────────── */
+.controls{display:flex;align-items:center;gap:20px;font-size:11px;color:var(--muted);align-self:flex-start;width:100%;max-width:390px}
+.ctrl{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+.ctrl input{accent-color:var(--accent)}
+
+/* ── Phone frame ─────────────────────────────────────── */
+.phone{
+  width:100%;max-width:390px;
+  background:#fff;
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.05);
+}
+
+/* ── Store header ────────────────────────────────────── */
+.store-hdr{
+  background:#fff;padding:13px 16px 11px;
+  display:flex;align-items:center;gap:10px;
+}
+.store-back{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;flex-shrink:0}
+.store-name{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.38rem;letter-spacing:2px;color:#111;line-height:1}
+
+/* ── Concert banner grid ─────────────────────────────── */
+.cat-banner{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;padding:10px;
+  background:#fff;
+}
+.cb-slot{overflow:hidden;position:relative;background:#e4e4e4}
+.cb-slot img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s ease}
+.cb-slot img[src=""]{opacity:0}
+
+.cat-banner>.cb-slot:nth-child(1),
+.cat-banner>.cb-slot:nth-child(2),
+.cat-banner>.cb-slot:nth-child(3),
+.cat-banner>.cb-slot:nth-child(4){aspect-ratio:1}
+
+.cat-banner>.cb-slot:nth-child(5){
+  grid-column:1/span 3;grid-row:2/span 2;
+  aspect-ratio:unset;
+}
+.cat-banner>.cb-slot:nth-child(6){grid-column:4;grid-row:2;aspect-ratio:1}
+.cat-banner>.cb-slot:nth-child(7){grid-column:4;grid-row:3;aspect-ratio:1}
+
+/* Slot label */
+.slot-lbl{
+  position:absolute;bottom:3px;left:3px;
+  font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  background:rgba(0,0,0,.6);color:#fff;
+  padding:1px 4px;border-radius:2px;
+  font-family:'Inter',monospace;pointer-events:none;
+  display:none;
+}
+body.show-labels .slot-lbl{display:block}
+
+/* ── Products placeholder ────────────────────────────── */
+.prods{background:#fff;padding:14px 14px 18px}
+.prods-hdr{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.05rem;letter-spacing:2px;color:#111;margin-bottom:10px}
+.prods-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pcard{border-radius:8px;overflow:hidden;background:#f3f3f3}
+.pthumb{
+  width:100%;aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+  transition:background .3s;
+}
+.pinfo{padding:7px 8px 9px}
+.pname{font-size:10px;font-weight:600;color:#333;line-height:1.35;margin-bottom:3px}
+.pprice{font-size:12px;font-weight:700;color:#111;font-variant-numeric:tabular-nums}
+
+/* ── SQL section ─────────────────────────────────────── */
+.sql-wrap{width:100%;max-width:390px}
+.sql-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sql-lbl{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.sql-copy{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  padding:4px 10px;border-radius:4px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:600;transition:all .15s;
+}
+.sql-copy:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+.sql-box{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:12px 14px;font-size:10.5px;line-height:1.65;
+  color:#777;font-family:'Menlo','Monaco','Courier New',monospace;
+  max-height:160px;overflow-y:auto;white-space:pre;overflow-x:auto;
+}
+.sql-box::-webkit-scrollbar{width:3px;height:3px}
+.sql-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.sql-note{font-size:10px;color:var(--muted);margin-top:7px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="pres-hdr">
+  <div>
+    <div class="ph-eyebrow">Boceto · Julio 2026</div>
+    <div class="ph-title">MonkeyShoes — Banners</div>
+    <div class="ph-chips">
+      <span class="chip"><b>20</b> secciones</span>
+      <span class="chip"><b>7</b> slots cada una</span>
+      <span class="chip"><b>140</b> fotos totales</span>
+      <span class="chip">4 categorías · 16 marcas</span>
+    </div>
+  </div>
+  <div class="ph-meta">
+    Layout: fila×4 arriba · gran foto izq · 2 derecha<br>
+    Editable desde panel Admin<br>
+    Guardado en Supabase <code style="font-size:10px;color:#555">contenido</code>
+  </div>
+</header>
+
+<!-- ── Layout ── -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="s-section">
+      <div class="s-label">Categorías</div>
+      <div class="brand-list" id="catList"></div>
+    </div>
+    <div class="s-section">
+      <div class="s-label">Marcas</div>
+      <div class="brand-list" id="brandList"></div>
+    </div>
+  </aside>
+
+  <!-- Preview -->
+  <div class="preview">
+
+    <div class="controls">
+      <label class="ctrl">
+        <input type="checkbox" id="lblCheck" onchange="toggleLabels()">
+        <span>Mostrar etiquetas de slots</span>
+      </label>
+    </div>
+
+    <!-- Phone -->
+    <div class="phone">
+      <div class="store-hdr">
+        <button class="store-back" aria-label="Volver">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        </button>
+        <span class="store-name" id="activeLabel">BALONCESTO</span>
+      </div>
+
+      <div class="cat-banner" id="catBanner"></div>
+
+      <div class="prods">
+        <div class="prods-hdr" id="prodsHdr">Productos · Baloncesto</div>
+        <div class="prods-grid" id="prodsGrid"></div>
+      </div>
+    </div>
+
+    <!-- SQL -->
+    <div class="sql-wrap">
+      <div class="sql-hdr">
+        <span class="sql-lbl">SQL — pegar en Supabase</span>
+        <button class="sql-copy" onclick="copySQL()">Copiar</button>
+      </div>
+      <div class="sql-box" id="sqlBox"></div>
+      <div class="sql-note">
+        Corre este SQL en el editor de Supabase → Database → SQL Editor.<br>
+        Reemplaza las fotos reales desde el panel Admin · Banners Categorías.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Photo base URLs ────────────────────────────────────────────────────────
+const P={
+  jordan:      'https://images.unsplash.com/photo-1490168105446-f43395eb50b5',
+  nike:        'https://images.unsplash.com/photo-1712167631738-4dab9e53c853',
+  adidas:      'https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8',
+  puma:        'https://images.unsplash.com/photo-1558457663-43bc46ee2a04',
+  reebok:      'https://images.unsplash.com/photo-1530389912609-9a007b3c38a4',
+  vans:        'https://images.unsplash.com/photo-1565963513169-108e0c01a074',
+  ch:          'https://images.unsplash.com/photo-1543652711-77eeb35ae548',
+  asics:       'https://images.unsplash.com/photo-1575456456278-936c89ccdb7b',
+  converse:    'https://images.unsplash.com/photo-1589817832921-0f5e0def9331',
+  nb:          'https://images.unsplash.com/photo-1465453869711-7e174808ace9',
+  skechers:    'https://images.unsplash.com/photo-1780789527198-b5ac86676033',
+  hh:          'https://images.unsplash.com/photo-1560769629-975ec94e6a86',
+  mk:          'https://images.unsplash.com/photo-1777987601471-22def6494460',
+  nautica:     'https://images.unsplash.com/photo-1529258617367-b9262c08ed3f',
+  hugo:        'https://images.unsplash.com/photo-1715764783691-da317960ba09',
+  lacoste:     'https://images.unsplash.com/photo-1718882707232-a1c6a8484b0f',
+  bball:       'https://images.unsplash.com/photo-1700854088063-e558c33fe3cc',
+  futbol2:     'https://images.unsplash.com/photo-1514514757092-71ebbc3db4e6',
+  run1:        'https://images.unsplash.com/photo-1571008887538-b36bb32f4571',
+  run2:        'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
+  box:         'https://images.unsplash.com/photo-1560769629-975ec94e6a86',
+  gnike:       'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa',
+};
+const q=(src,w,h)=>`${src}?w=${w}&h=${h}&auto=format&fit=crop&q=80`;
+
+// ── Section definitions ────────────────────────────────────────────────────
+// slots order: [t1, t2, t3, t4, big, r1, r2]
+const SECTIONS=[
+  {key:'baloncesto', label:'Baloncesto',  type:'cat',  color:'#E05E1C',
+   slots:[P.bball,P.run2,P.gnike,P.jordan,P.bball,P.run2,P.gnike],
+   products:[['Air Jordan 1 Retro','$420.000'],['Nike LeBron XX','$380.000'],['Adidas D.O.N.','$290.000'],['Puma Clyde Court','$260.000']]},
+  {key:'futbol', label:'Fútbol',         type:'cat',  color:'#1E7A34',
+   slots:[P.futbol2,P.adidas,P.futbol2,P.adidas,P.futbol2,P.adidas,P.futbol2],
+   products:[['Adidas Predator Edge','$310.000'],['Nike Mercurial','$340.000'],['Puma Future Z','$265.000'],['Nike Phantom','$295.000']]},
+  {key:'running', label:'Running',       type:'cat',  color:'#5B35C2',
+   slots:[P.run1,P.run2,P.hh,P.gnike,P.run1,P.run2,P.hh],
+   products:[['Nike Air Zoom Pegasus','$350.000'],['Adidas Ultraboost 22','$420.000'],['Asics Gel-Nimbus','$380.000'],['New Balance 1080','$395.000']]},
+  {key:'casual', label:'Casual',         type:'cat',  color:'#8A6A3A',
+   slots:[P.box,P.ch,P.nautica,P.hugo,P.box,P.ch,P.nautica],
+   products:[['Vans Old Skool','$210.000'],['Converse Chuck 70','$230.000'],['Lacoste Lerond','$280.000'],['CH Sneaker Sport','$350.000']]},
+
+  {key:'jordan',       label:'Jordan',       type:'brand', color:'#CC1E2A',
+   slots:[P.jordan,P.bball,P.run2,P.gnike,P.jordan,P.bball,P.jordan],
+   products:[['Air Jordan 1 Retro OG','$420.000'],['Air Jordan 4 Bred','$480.000'],['Air Jordan 11 Concord','$560.000'],['Air Jordan 3 White Cement','$430.000']]},
+  {key:'nike',         label:'Nike',         type:'brand', color:'#111111',
+   slots:[P.nike,P.run2,P.gnike,P.nike,P.nike,P.run2,P.gnike],
+   products:[['Nike Air Max 95','$380.000'],['Nike Air Force 1 07','$290.000'],['Nike Dunk Low Retro','$310.000'],['Nike React Infinity','$340.000']]},
+  {key:'adidas',       label:'Adidas',       type:'brand', color:'#000000',
+   slots:[P.adidas,P.run1,P.adidas,P.run1,P.adidas,P.run1,P.adidas],
+   products:[['Adidas Ultraboost 22','$420.000'],['Adidas NMD R1','$330.000'],['Adidas Samba OG','$295.000'],['Adidas Yeezy 350','$620.000']]},
+  {key:'puma',         label:'Puma',         type:'brand', color:'#E50000',
+   slots:[P.puma,P.puma,P.puma,P.puma,P.puma,P.puma,P.puma],
+   products:[['Puma RS-X³ Puzzle','$280.000'],['Puma Suede Classic','$210.000'],['Puma Clyde Court','$260.000'],['Puma Rider FV','$230.000']]},
+  {key:'reebok',       label:'Reebok',       type:'brand', color:'#CB2C30',
+   slots:[P.reebok,P.reebok,P.reebok,P.reebok,P.reebok,P.reebok,P.reebok],
+   products:[['Reebok Classic Leather','$220.000'],['Reebok Club C 85','$210.000'],['Reebok Instapump Fury','$370.000'],['Reebok Nano X2','$295.000']]},
+  {key:'vans',         label:'Vans',         type:'brand', color:'#232323',
+   slots:[P.vans,P.vans,P.vans,P.vans,P.vans,P.vans,P.vans],
+   products:[['Vans Old Skool','$210.000'],['Vans Sk8-Hi','$230.000'],['Vans Authentic','$185.000'],['Vans Era','$195.000']]},
+  {key:'ch',           label:'CH',           type:'brand', color:'#B8922A',
+   slots:[P.ch,P.ch,P.ch,P.ch,P.ch,P.ch,P.ch],
+   products:[['CH Sport Runner','$350.000'],['CH Trainer Elite','$380.000'],['CH Classic Oxford','$290.000'],['CH Low Rider','$310.000']]},
+  {key:'asics',        label:'Asics',        type:'brand', color:'#00509E',
+   slots:[P.asics,P.asics,P.asics,P.asics,P.asics,P.asics,P.asics],
+   products:[['Gel-Kayano 28','$420.000'],['Gel-Nimbus 23','$390.000'],['GT-2000 10','$350.000'],['Gel-Cumulus 23','$340.000']]},
+  {key:'converse',     label:'Converse',     type:'brand', color:'#C41E3A',
+   slots:[P.converse,P.converse,P.converse,P.converse,P.converse,P.converse,P.converse],
+   products:[['Chuck Taylor All Star','$195.000'],['Chuck 70 High Top','$240.000'],['One Star Ox','$220.000'],['Run Star Hike','$275.000']]},
+  {key:'new_balance',  label:'New Balance',  type:'brand', color:'#CF0A2C',
+   slots:[P.nb,P.nb,P.nb,P.nb,P.nb,P.nb,P.nb],
+   products:[['New Balance 574','$280.000'],['New Balance 990v5','$490.000'],['New Balance 327','$265.000'],['New Balance 1080v12','$395.000']]},
+  {key:'skechers',     label:'Skechers',     type:'brand', color:'#003DA5',
+   slots:[P.skechers,P.skechers,P.skechers,P.skechers,P.skechers,P.skechers,P.skechers],
+   products:[['Skechers D\'Lites','$230.000'],['Skechers GOwalk 5','$215.000'],['Skechers Max Cushioning','$260.000'],['Skechers Arch Fit','$245.000']]},
+  {key:'helly_hansen', label:'Helly Hansen', type:'brand', color:'#E05500',
+   slots:[P.hh,P.hh,P.hh,P.hh,P.hh,P.hh,P.hh],
+   products:[['HH Latitude Trail','$380.000'],['HH Switchback Trail','$350.000'],['HH Pinehurst Puffy','$320.000'],['HH Traverse Trail','$310.000']]},
+  {key:'michael_kors', label:'Michael Kors', type:'brand', color:'#1A1A1A',
+   slots:[P.mk,P.mk,P.mk,P.mk,P.mk,P.mk,P.mk],
+   products:[['MK Keating Trainer','$520.000'],['MK Allie Trainer','$490.000'],['MK Scout Trainer','$475.000'],['MK Irving Lace-Up','$450.000']]},
+  {key:'nautica',      label:'Nautica',      type:'brand', color:'#003087',
+   slots:[P.nautica,P.nautica,P.nautica,P.nautica,P.nautica,P.nautica,P.nautica],
+   products:[['Nautica Dock Boat Shoe','$285.000'],['Nautica Kenji Sport','$260.000'],['Nautica Cove Loafer','$275.000'],['Nautica Edgewater','$310.000']]},
+  {key:'hugo_boss',    label:'Hugo Boss',    type:'brand', color:'#1A1A1A',
+   slots:[P.hugo,P.hugo,P.hugo,P.hugo,P.hugo,P.hugo,P.hugo],
+   products:[['Hugo Boss Aiden Derby','$580.000'],['Hugo Boss Parkour Runn','$520.000'],['Hugo Boss Icelin Runner','$490.000'],['Hugo Boss Titanium','$560.000']]},
+  {key:'lacoste',      label:'Lacoste',      type:'brand', color:'#009639',
+   slots:[P.lacoste,P.lacoste,P.lacoste,P.lacoste,P.lacoste,P.lacoste,P.lacoste],
+   products:[['Lacoste L.12.12 Blanc','$360.000'],['Lacoste Lerond','$280.000'],['Lacoste Court-Drive','$310.000'],['Lacoste G-Elite','$340.000']]},
+];
+
+// ── Render nav ─────────────────────────────────────────────────────────────
+document.getElementById('catList').innerHTML=SECTIONS.filter(s=>s.type==='cat').map(s=>
+  `<button class="brand-btn" data-key="${s.key}" onclick="activate('${s.key}')">${s.label}</button>`
+).join('');
+document.getElementById('brandList').innerHTML=SECTIONS.filter(s=>s.type==='brand').map(s=>
+  `<button class="brand-btn" data-key="${s.key}" onclick="activate('${s.key}')">${s.label}</button>`
+).join('');
+
+// ── Slot config ────────────────────────────────────────────────────────────
+const SLOTS=['t1','t2','t3','t4','big','r1','r2'];
+const SIZES=[[600,420],[600,420],[600,420],[600,420],[1200,900],[600,480],[600,480]];
+
+// ── Activate ───────────────────────────────────────────────────────────────
+function activate(key){
+  const sec=SECTIONS.find(s=>s.key===key);
+  if(!sec)return;
+
+  document.querySelectorAll('.brand-btn').forEach(b=>b.classList.toggle('active',b.dataset.key===key));
+  document.getElementById('activeLabel').textContent=sec.label.toUpperCase();
+  document.getElementById('prodsHdr').textContent=`Productos · ${sec.label}`;
+
+  // Banner
+  document.getElementById('catBanner').innerHTML=sec.slots.map((src,i)=>{
+    const[w,h]=SIZES[i];
+    return `<div class="cb-slot"><img src="${q(src,w,h)}" loading="lazy" alt="${SLOTS[i]}"><span class="slot-lbl">${SLOTS[i]}</span></div>`;
+  }).join('');
+
+  // Products
+  document.getElementById('prodsGrid').innerHTML=sec.products.map(([name,price])=>`
+    <div class="pcard">
+      <div class="pthumb" style="background:linear-gradient(135deg,${sec.color}22,${sec.color}44)">👟</div>
+      <div class="pinfo"><div class="pname">${name}</div><div class="pprice">${price}</div></div>
+    </div>`).join('');
+
+  // SQL
+  document.getElementById('sqlBox').textContent=genSQL();
+}
+
+// ── SQL generator ──────────────────────────────────────────────────────────
+function genSQL(){
+  const rows=[];
+  SECTIONS.forEach(sec=>{
+    sec.slots.forEach((src,i)=>{
+      const[w,h]=SIZES[i];
+      rows.push(`('banner_${sec.key}_${SLOTS[i]}', '${q(src,w,h)}', 50, 50)`);
+    });
+  });
+  return `INSERT INTO contenido (clave, valor, pos_x, pos_y) VALUES\n${rows.join(',\n')}\nON CONFLICT (clave) DO UPDATE SET\n  valor = EXCLUDED.valor,\n  pos_x = EXCLUDED.pos_x,\n  pos_y = EXCLUDED.pos_y;`;
+}
+
+function copySQL(){
+  navigator.clipboard.writeText(genSQL()).then(()=>{
+    const b=document.querySelector('.sql-copy');
+    b.textContent='¡Copiado!';
+    setTimeout(()=>{ b.textContent='Copiar'; },2000);
+  });
+}
+
+function toggleLabels(){
+  document.body.classList.toggle('show-labels',document.getElementById('lblCheck').checked);
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+activate('baloncesto');
+</script>
+</body>
+</html>
