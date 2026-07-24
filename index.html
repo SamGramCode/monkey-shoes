@@ -1144,16 +1144,18 @@ img{max-width:100%}
     100% { transform: translateX(-82%); }
   }
   @media(max-width:599px){
-    #bannerTitulo{font-size:2.6rem;letter-spacing:3px;padding-left:14px;margin-bottom:14px}
-    #detalleRow{flex-direction:column;height:auto;min-height:100%}
-    #detalleDots{width:100%;flex-direction:row;padding:10px 0;gap:6px}
-    #detalleImgWrap{flex:none;height:52vh}
-    #detalleInfo{width:100%;flex:none;padding:24px 20px;border-left:none;border-top:1px solid #eee}
+    /* !important en todo: estos elementos tienen sus valores originales en estilo en línea
+       (style="..."), que siempre le gana a una regla normal de hoja de estilos */
+    #bannerTitulo{font-size:2.6rem!important;letter-spacing:3px!important;padding-left:14px!important;margin-bottom:14px!important}
+    #detalleRow{flex-direction:column!important;height:auto!important;min-height:100%!important}
+    #detalleDots{width:100%!important;flex-direction:row!important;padding:10px 0!important;gap:6px!important}
+    #detalleImgWrap{flex:none!important;height:52vh!important}
+    #detalleInfo{width:100%!important;flex:none!important;padding:24px 20px!important;border-left:none!important;border-top:1px solid #eee!important}
     /* Recortes con margen negativo — en % en vez de px fijos, para que el recorte
        mantenga la misma proporción visual del video/imagen sin importar el ancho de pantalla */
-    #videoJordanEl{margin-bottom:-13.9%}
-    #verJordanBtn{bottom:36%}
-    #monitosImg{margin-top:-14.5%;margin-bottom:-17.9%}
+    #videoJordanEl{margin-bottom:-13.9%!important}
+    #verJordanBtn{bottom:36%!important}
+    #monitosImg{margin-top:-14.5%!important;margin-bottom:-17.9%!important}
   }
   </style>
 
