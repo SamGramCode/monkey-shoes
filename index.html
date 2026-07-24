@@ -1171,26 +1171,19 @@ img{max-width:100%}
     .drops-card{flex:0 0 78%!important;padding:0 6px!important}
     .drops-card-img{height:260px!important}
     #dropsArrIzq,#dropsArrDer{display:none!important}
-    /* BANNER PRODUCTO DESTACADO — apilar foto arriba y panel de info abajo,
-       para que no se recorte la foto ni se encimen los textos */
-    #bannerDestacado{flex-direction:column!important;height:auto!important}
-    #bannerFotoWrap{width:100%!important;height:220px!important}
-    #bannerPanel{padding:14px 16px 16px!important}
-    #bannerInfoRow{position:static!important;margin-bottom:10px!important}
-    #bannerTitulo{margin-bottom:0!important}
   }
   </style>
 
   <!-- BANNER PRODUCTO DESTACADO -->
-  <div id="bannerDestacado" style="margin-top:30px;width:100%;height:200px;display:flex;overflow:hidden">
+  <div style="margin-top:30px;width:100%;height:200px;display:flex;overflow:hidden">
     <!-- Foto izquierda -->
-    <div id="bannerFotoWrap" style="width:38%;flex-shrink:0;overflow:hidden;background:#111;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
+    <div style="width:38%;flex-shrink:0;overflow:hidden;background:#111;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
       <img id="bannerFoto" src="super-star-negra.png" alt="" style="width:100%;height:100%;object-fit:cover">
     </div>
     <!-- Panel derecho rojo -->
-    <div id="bannerPanel" style="flex:1;background:#CC0000;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end">
+    <div style="flex:1;background:#CC0000;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end">
       <!-- Fila info pequeña -->
-      <div id="bannerInfoRow" style="position:absolute;top:162px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;z-index:1">
+      <div style="position:absolute;top:162px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;z-index:1">
         <span style="color:#fff;font-size:.7rem;font-style:italic;font-weight:600">ADIDAS</span>
         <div style="display:flex;align-items:center;gap:6px">
           <span style="color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1px;position:relative;top:2px">MONKEY SHOES</span>
