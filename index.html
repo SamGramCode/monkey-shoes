@@ -483,7 +483,6 @@ img{max-width:100%}
 .nav-link-black.active{color:#1A73E8}
 .nav-sub-group{display:none}.nav-sub-group.active{display:flex;flex-direction:column}
 .nav-sub-cat{font-size:1.1rem;font-weight:800;color:#1A73E8;display:inline-flex;flex-direction:column;margin-bottom:8px}
-.nav-sub-cat::after{content:'';display:block;width:80px;height:1px;background:#aaa;margin-top:3px;opacity:.5}
 .nav-sub-link{font-size:1.05rem;font-weight:500;color:#111;padding:10px 0;cursor:pointer;display:block}
 #navSubMarcas{gap:20px}
 #navSubMarcas .nav-sub-link{color:#1A73E8;display:inline-flex;flex-direction:column;font-size:1.7rem;padding:0}
@@ -643,7 +642,6 @@ img{max-width:100%}
       <button class="nav-close" onclick="cerrarSubNav();toggleMenu()">✕</button>
     </div>
     <div class="nav-drawer-body" style="position:relative">
-      <div style="position:absolute;left:190px;top:0;bottom:0;width:1px;background:#eee;z-index:1"></div>
       <div class="nav-col-left" id="navColLeft">
         <a class="nav-link-color" onclick="cerrarSubNav();toggleMenu();abrirNewIn()">NEW IN SNEAKERS</a>
         <a class="nav-link-black" id="navCatHombre" onclick="selectNavCat('hombre')">HOMBRE</a>
