@@ -1146,7 +1146,7 @@ img{max-width:100%}
   @media(max-width:599px){
     /* !important en todo: estos elementos tienen sus valores originales en estilo en línea
        (style="..."), que siempre le gana a una regla normal de hoja de estilos */
-    #bannerTitulo{font-size:2.6rem!important;letter-spacing:3px!important;padding-left:14px!important;margin-bottom:14px!important}
+    #bannerTitulo{font-size:2.6rem!important;letter-spacing:3px!important}
     #detalleRow{flex-direction:column!important;height:auto!important;min-height:100%!important}
     #detalleDots{width:100%!important;flex-direction:row!important;padding:10px 0!important;gap:6px!important}
     #detalleImgWrap{flex:none!important;height:52vh!important}
@@ -1181,9 +1181,9 @@ img{max-width:100%}
       <img id="bannerFoto" src="super-star-negra.png" alt="" style="width:100%;height:100%;object-fit:cover">
     </div>
     <!-- Panel derecho rojo -->
-    <div style="flex:1;background:#CC0000;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end">
+    <div style="flex:1;background:#CC0000;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center">
       <!-- Fila info pequeña -->
-      <div style="position:absolute;top:97px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;z-index:1">
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px;z-index:1">
         <span style="color:#fff;font-size:.7rem;font-style:italic;font-weight:600">ADIDAS</span>
         <div style="display:flex;align-items:center;gap:6px">
           <span style="color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1px;position:relative;top:2px">MONKEY SHOES</span>
@@ -1193,7 +1193,7 @@ img{max-width:100%}
         <span style="color:#fff;font-size:.7rem;font-style:italic;font-weight:600">Super Star</span>
       </div>
       <!-- Texto grande -->
-      <div id="bannerTitulo" style="font-family:'Bebas Neue',sans-serif;font-size:4.5rem;line-height:.82;color:#fff;padding:0 14px 6px;padding-left:100px;letter-spacing:33px;word-break:break-word;margin-bottom:38px">SUPER STAR</div>
+      <div id="bannerTitulo" style="font-family:'Bebas Neue',sans-serif;font-size:4.5rem;line-height:.82;color:#fff;text-align:center;letter-spacing:33px;word-break:break-word">SUPER STAR</div>
     </div>
   </div>
 
