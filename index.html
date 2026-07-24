@@ -1161,6 +1161,16 @@ img{max-width:100%}
     #marcasStrip{overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     #marcasStrip::-webkit-scrollbar{display:none}
     #marcasTrack{transform:none!important}
+    /* NEW IN DROPS — apilar título arriba y carrusel abajo, deslizable con el dedo */
+    #dropsSection{flex-direction:column!important;padding:0 16px 24px!important}
+    #dropsHeader{width:100%!important;padding-top:0!important}
+    #dropsTitle{font-size:2.6rem!important;margin-bottom:12px!important}
+    #dropsCarouselWrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:16px}
+    #dropsCarouselWrap::-webkit-scrollbar{display:none}
+    #dropsTrack{transform:none!important}
+    .drops-card{flex:0 0 78%!important;padding:0 6px!important}
+    .drops-card-img{height:260px!important}
+    #dropsArrIzq,#dropsArrDer{display:none!important}
   }
   </style>
 
@@ -1204,25 +1214,25 @@ img{max-width:100%}
   </div>
 
   <!-- NEW IN DROPS -->
-  <div style="margin-top:30px;width:100%;background:#fff;display:flex;padding:0 60px 40px">
+  <div id="dropsSection" style="margin-top:30px;width:100%;background:#fff;display:flex;padding:0 60px 40px">
     <!-- Izquierda -->
-    <div style="width:220px;flex-shrink:0;padding-top:10px">
+    <div id="dropsHeader" style="width:220px;flex-shrink:0;padding-top:10px">
       <div style="display:inline-flex;align-items:center;gap:0;margin-bottom:10px">
         <span style="background:#000;color:#fff;font-size:.65rem;font-weight:700;padding:3px 7px;letter-spacing:1px">NEW IN</span>
         <span style="border:1.5px solid #000;color:#000;font-size:.65rem;font-weight:700;padding:3px 7px;letter-spacing:1px">DROPS</span>
       </div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:.9;color:#111;margin-bottom:20px">Drops</div>
+      <div id="dropsTitle" style="font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:.9;color:#111;margin-bottom:20px">Drops</div>
       <a href="#" onclick="event.preventDefault();abrirDropsOverlay()" style="display:inline-flex;align-items:center;gap:6px;border:1.5px solid #111;padding:6px 14px;font-size:.75rem;font-weight:600;color:#111;text-decoration:none">Ver Todo &nbsp;↗</a>
     </div>
     <!-- Carrusel -->
-    <div style="flex:1;position:relative;overflow:hidden;clip-path:inset(0)">
+    <div id="dropsCarouselWrap" style="flex:1;position:relative;overflow:hidden;clip-path:inset(0)">
       <div id="dropsTrack" style="display:flex;gap:0;transition:transform .35s ease">
         <!-- Card 1 -->
-        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+        <div class="drops-card" style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
           <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
             <div style="position:absolute;top:10px;left:10px;background:#0d9e72;color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;letter-spacing:.5px">NEW</div>
             <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
-            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['nike-zapato1.jpg'],marca:'Nike',nombre:'Air Jordan 1 Low',precio:'$ 129.950'})">
+            <div class="drops-card-img" style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['nike-zapato1.jpg'],marca:'Nike',nombre:'Air Jordan 1 Low',precio:'$ 129.950'})">
               <img src="nike-zapato1.jpg" style="width:100%;height:100%;object-fit:cover">
             </div>
             <div style="padding:12px">
@@ -1233,10 +1243,10 @@ img{max-width:100%}
           </div>
         </div>
         <!-- Card 2 -->
-        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+        <div class="drops-card" style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
           <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
             <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
-            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
+            <div class="drops-card-img" style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['adidas-zapato1.jpg'],marca:'Adidas',nombre:'Super Star Negra',precio:'$ 99.950'})">
               <img src="adidas-zapato1.jpg" style="width:100%;height:100%;object-fit:cover">
             </div>
             <div style="padding:12px">
@@ -1247,11 +1257,11 @@ img{max-width:100%}
           </div>
         </div>
         <!-- Card 3 -->
-        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+        <div class="drops-card" style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
           <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
             <div style="position:absolute;top:10px;left:10px;background:#0d9e72;color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;letter-spacing:.5px">NEW</div>
             <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
-            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['aja1.jpg'],marca:'Jordan',nombre:'Air Jordan Retro',precio:'$ 149.950'})">
+            <div class="drops-card-img" style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['aja1.jpg'],marca:'Jordan',nombre:'Air Jordan Retro',precio:'$ 149.950'})">
               <img src="aja1.jpg" style="width:100%;height:100%;object-fit:cover">
             </div>
             <div style="padding:12px">
@@ -1262,10 +1272,10 @@ img{max-width:100%}
           </div>
         </div>
         <!-- Card 4 -->
-        <div style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
+        <div class="drops-card" style="flex:0 0 calc(100% / 3);padding:0 35px;box-sizing:border-box">
           <div style="background:#fff;border:1px solid #e8e8e8;border-radius:2px;overflow:hidden;position:relative">
             <div style="position:absolute;top:10px;right:10px;font-size:1.1rem;color:#ccc;cursor:pointer">♡</div>
-            <div style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['aja2.jpg'],marca:'Jordan',nombre:'Air Jordan Low SE',precio:'$ 139.950'})">
+            <div class="drops-card-img" style="background:#f5f5f5;height:380px;overflow:hidden;cursor:pointer" onclick="abrirDetalle({fotos:['aja2.jpg'],marca:'Jordan',nombre:'Air Jordan Low SE',precio:'$ 139.950'})">
               <img src="aja2.jpg" style="width:100%;height:100%;object-fit:cover">
             </div>
             <div style="padding:12px">
@@ -1277,8 +1287,8 @@ img{max-width:100%}
         </div>
       </div>
       <!-- Flechas -->
-      <button onclick="scrollDrops(-1)" style="position:absolute;left:0;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
-      <button onclick="scrollDrops(1)" style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">→</button>
+      <button id="dropsArrIzq" onclick="scrollDrops(-1)" style="position:absolute;left:0;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+      <button id="dropsArrDer" onclick="scrollDrops(1)" style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #ddd;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">→</button>
     </div>
   </div>
 
