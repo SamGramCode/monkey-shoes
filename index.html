@@ -2522,8 +2522,10 @@ function agregarAlCarrito() {
 
 function actualizarCarrito() {
   const total = carrito.reduce((s,i)=>s+i.cantidad,0);
-  document.getElementById('cartCount').textContent = total;
-  document.getElementById('cartBtn').style.display = total > 0 ? 'flex' : 'none';
+  const cartCount = document.getElementById('cartCount');
+  const cartBtn = document.getElementById('cartBtn');
+  if (cartCount) cartCount.textContent = total;
+  if (cartBtn) cartBtn.style.display = total > 0 ? 'flex' : 'none';
 }
 
 function verCarrito() {
